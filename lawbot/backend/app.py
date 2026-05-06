@@ -81,12 +81,22 @@ Always end responses about serious matters with: "Remember, you can also consult
 
 # ── API Routes ───────────────────────────────────────────────────────────────
 
+# ── API Routes ───────────────────────────────────────────────────────────────
 
 @app.route('/')
 def index():
-    # This points to your main LegalQuestor landing page
-    # Adjust the path if your main file is named differently (e.g., 'home.html')
+    # This serves your main landing page (the one in the first screenshot)
     return send_from_directory('../../legalquestor', 'index.html')
+
+@app.route('/chatbot.html')
+def chatbot_page():
+    # This serves your LawBot chat page
+    return send_from_directory('../frontend', 'index.html')
+
+@app.route('/documents.html')
+def documents_page():
+    # This serves your Generate Documents page
+    return send_from_directory('../../legalquestor', 'documents.html')
 
 @app.route('/api/chat', methods=['POST'])
 def chat():
