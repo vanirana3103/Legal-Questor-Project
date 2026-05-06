@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LegalQuestor — AI-Powered Legal Assistance for India</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #0e0e0e;
+  --ink2: #1c1c1c;
+  --paper: #f9f5ee;
+  --paper2: #f0ead8;
+  --gold: #b8860b;
+  --gold2: #d4a017;
+  --gold-light: #f5d87a;
+  --crimson: #8b1a1a;
+  --sage: #4a6741;
+  --muted: #6b6b6b;
+  --border: rgba(184,134,11,0.2);
+  --white: #ffffff;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+
+html{scroll-behavior:smooth;}
+
+body{
+  font-family:'Outfit',sans-serif;
+  background:var(--paper);
+  color:var(--ink);
+  overflow-x:hidden;
+}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 60px;
+  background:rgba(249,245,238,0.92);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  transition:all 0.3s;
+}
+nav.scrolled{padding:12px 60px;box-shadow:0 2px 20px rgba(0,0,0,0.08);}
+
+.nav-logo{display:flex;align-items:center;gap:12px;text-decoration:none;}
+.nav-logo-icon{
+  width:38px;height:38px;
+  background:linear-gradient(135deg,var(--ink),var(--ink2));
+  border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;
+}
+.nav-logo-text{
+  font-family:'Cormorant Garamond',serif;
+  font-size:22px;font-weight:700;
+  color:var(--ink);letter-spacing:0.3px;
+}
+.nav-logo-text span{color:var(--gold);}
+
+.nav-links{display:flex;align-items:center;gap:36px;}
+.nav-links a{
+  text-decoration:none;color:var(--muted);
+  font-size:14px;font-weight:500;
+  transition:color 0.2s;letter-spacing:0.3px;
+}
+.nav-links a:hover{color:var(--ink);}
+
+.nav-cta{
+  background:var(--ink);color:var(--paper);
+  border:none;border-radius:8px;
+  padding:10px 22px;font-size:13px;font-weight:600;
+  font-family:'Outfit',sans-serif;
+  cursor:pointer;text-decoration:none;
+  transition:all 0.2s;letter-spacing:0.3px;
+}
+.nav-cta:hover{background:var(--gold);color:var(--ink);}
+
+/* ── HERO ── */
+.hero{
+  min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;
+  padding:120px 40px 80px;
+  position:relative;
+  overflow:hidden;
+}
+
+.hero-bg{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(184,134,11,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 20% 80%, rgba(139,26,26,0.05) 0%, transparent 50%),
+    radial-gradient(ellipse 40% 40% at 80% 60%, rgba(74,103,65,0.05) 0%, transparent 50%);
+}
+
+/* Decorative scales of justice SVG background */
+.hero-decoration{
+  position:absolute;right:-80px;top:50%;transform:translateY(-50%);
+  width:500px;height:500px;opacity:0.04;
+  font-size:400px;line-height:1;
+  pointer-events:none;
+}
+
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(184,134,11,0.1);
+  border:1px solid rgba(184,134,11,0.25);
+  border-radius:20px;padding:6px 16px;
+  font-size:12px;font-weight:600;
+  color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;
+  margin-bottom:28px;
+  animation:fadeUp 0.6s ease both;
+}
+
+.hero h1{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(48px,7vw,88px);
+  font-weight:700;line-height:1.05;
+  color:var(--ink);
+  margin-bottom:24px;
+  animation:fadeUp 0.6s 0.1s ease both;
+}
+
+.hero h1 em{
+  font-style:italic;color:var(--gold);
+}
+
+.hero-sub{
+  font-size:clamp(16px,2vw,20px);
+  color:var(--muted);
+  max-width:560px;line-height:1.7;
+  margin-bottom:48px;
+  font-weight:400;
+  animation:fadeUp 0.6s 0.2s ease both;
+}
+
+.hero-actions{
+  display:flex;gap:16px;flex-wrap:wrap;justify-content:center;
+  margin-bottom:80px;
+  animation:fadeUp 0.6s 0.3s ease both;
+}
+
+.btn-primary{
+  background:var(--ink);color:var(--paper);
+  border:none;border-radius:10px;
+  padding:15px 32px;font-size:15px;font-weight:600;
+  font-family:'Outfit',sans-serif;
+  cursor:pointer;text-decoration:none;
+  transition:all 0.25s;letter-spacing:0.3px;
+  display:inline-flex;align-items:center;gap:8px;
+}
+.btn-primary:hover{background:var(--gold);color:var(--ink);transform:translateY(-2px);box-shadow:0 8px 24px rgba(184,134,11,0.3);}
+
+.btn-outline{
+  background:transparent;color:var(--ink);
+  border:1.5px solid rgba(14,14,14,0.25);border-radius:10px;
+  padding:15px 32px;font-size:15px;font-weight:500;
+  font-family:'Outfit',sans-serif;
+  cursor:pointer;text-decoration:none;
+  transition:all 0.25s;
+  display:inline-flex;align-items:center;gap:8px;
+}
+.btn-outline:hover{border-color:var(--ink);background:var(--ink);color:var(--paper);}
+
+.hero-stats{
+  display:flex;gap:60px;justify-content:center;flex-wrap:wrap;
+  animation:fadeUp 0.6s 0.4s ease both;
+}
+
+.stat{text-align:center;}
+.stat-num{
+  font-family:'Cormorant Garamond',serif;
+  font-size:42px;font-weight:700;color:var(--ink);
+  line-height:1;
+}
+.stat-num span{color:var(--gold);}
+.stat-label{font-size:12px;color:var(--muted);margin-top:4px;letter-spacing:0.5px;text-transform:uppercase;}
+
+/* ── FEATURES SECTION ── */
+.section{padding:100px 60px;}
+.section-center{text-align:center;}
+
+.section-label{
+  display:inline-block;
+  font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;
+  color:var(--gold);margin-bottom:16px;
+}
+
+.section-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(36px,5vw,56px);font-weight:700;
+  color:var(--ink);line-height:1.1;margin-bottom:16px;
+}
+
+.section-sub{
+  font-size:17px;color:var(--muted);
+  max-width:520px;margin:0 auto;line-height:1.7;
+}
+
+/* ── FEATURE CARDS ── */
+.features-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:24px;
+  max-width:1200px;margin:60px auto 0;
+}
+
+.feature-card{
+  background:var(--white);
+  border:1px solid rgba(14,14,14,0.08);
+  border-radius:20px;
+  padding:40px 36px;
+  position:relative;overflow:hidden;
+  transition:all 0.3s;
+  text-decoration:none;color:inherit;
+  display:block;
+  cursor:pointer;
+}
+
+.feature-card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,transparent 60%,rgba(184,134,11,0.04));
+  opacity:0;transition:opacity 0.3s;
+}
+
+.feature-card:hover{
+  transform:translateY(-6px);
+  box-shadow:0 20px 60px rgba(0,0,0,0.1);
+  border-color:rgba(184,134,11,0.3);
+}
+.feature-card:hover::before{opacity:1;}
+
+.feature-card.highlight{
+  background:var(--ink);color:var(--paper);
+  border-color:var(--ink);
+}
+.feature-card.highlight .feature-icon{background:rgba(255,255,255,0.1);}
+.feature-card.highlight .feature-title{color:var(--paper);}
+.feature-card.highlight .feature-desc{color:rgba(249,245,238,0.65);}
+.feature-card.highlight .feature-tag{background:var(--gold);color:var(--ink);}
+.feature-card.highlight .feature-arrow{color:var(--gold);}
+
+.feature-icon{
+  width:52px;height:52px;
+  background:rgba(184,134,11,0.1);
+  border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;margin-bottom:24px;
+}
+
+.feature-tag{
+  display:inline-block;
+  background:rgba(184,134,11,0.1);
+  color:var(--gold);
+  font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;
+  border-radius:20px;padding:4px 12px;
+  margin-bottom:16px;
+}
+
+.feature-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:26px;font-weight:700;
+  color:var(--ink);margin-bottom:12px;line-height:1.2;
+}
+
+.feature-desc{
+  font-size:14px;color:var(--muted);
+  line-height:1.7;margin-bottom:28px;
+}
+
+.feature-list{
+  list-style:none;margin-bottom:28px;
+}
+.feature-list li{
+  font-size:13px;color:var(--muted);
+  padding:5px 0;
+  display:flex;align-items:center;gap:8px;
+}
+.feature-list li::before{
+  content:'→';color:var(--gold);font-size:12px;flex-shrink:0;
+}
+.feature-card.highlight .feature-list li{color:rgba(249,245,238,0.6);}
+.feature-card.highlight .feature-list li::before{color:var(--gold-light);}
+
+.feature-arrow{
+  font-size:20px;color:var(--gold);
+  display:inline-block;
+  transition:transform 0.2s;
+}
+.feature-card:hover .feature-arrow{transform:translateX(4px);}
+
+/* ── HOW IT WORKS ── */
+.how-section{
+  background:var(--ink);
+  padding:100px 60px;
+  position:relative;overflow:hidden;
+}
+
+.how-section::before{
+  content:'';position:absolute;
+  top:-100px;right:-100px;
+  width:500px;height:500px;
+  background:radial-gradient(circle,rgba(184,134,11,0.15) 0%,transparent 70%);
+  pointer-events:none;
+}
+
+.how-section .section-label{color:var(--gold);}
+.how-section .section-title{color:var(--paper);}
+.how-section .section-sub{color:rgba(249,245,238,0.5);}
+
+.steps-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:0;max-width:1100px;margin:60px auto 0;
+  position:relative;
+}
+
+.steps-grid::before{
+  content:'';position:absolute;
+  top:28px;left:calc(12.5% + 14px);right:calc(12.5% + 14px);
+  height:1px;background:rgba(184,134,11,0.2);
+}
+
+.step{
+  text-align:center;padding:0 24px;
+  position:relative;
+}
+
+.step-num{
+  width:56px;height:56px;
+  background:var(--ink);
+  border:1px solid rgba(184,134,11,0.3);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Cormorant Garamond',serif;
+  font-size:22px;font-weight:700;color:var(--gold);
+  margin:0 auto 24px;
+  position:relative;z-index:1;
+}
+
+.step-title{
+  font-size:15px;font-weight:600;
+  color:var(--paper);margin-bottom:8px;
+}
+
+.step-desc{
+  font-size:13px;color:rgba(249,245,238,0.45);
+  line-height:1.6;
+}
+
+/* ── LEGAL DOCS SECTION ── */
+.docs-section{padding:100px 60px;background:var(--white);}
+
+.docs-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:60px;max-width:1100px;margin:60px auto 0;
+  align-items:center;
+}
+
+.docs-visual{
+  background:var(--paper);
+  border:1px solid var(--border);
+  border-radius:20px;padding:40px;
+  position:relative;
+}
+
+.doc-type-list{display:flex;flex-direction:column;gap:12px;}
+
+.doc-type-item{
+  display:flex;align-items:center;gap:16px;
+  background:var(--white);
+  border:1px solid rgba(14,14,14,0.07);
+  border-radius:12px;padding:16px 20px;
+  cursor:pointer;
+  transition:all 0.2s;
+  text-decoration:none;color:inherit;
+}
+.doc-type-item:hover{border-color:var(--gold);transform:translateX(4px);}
+.doc-type-item.active{border-color:var(--gold);background:rgba(184,134,11,0.05);}
+
+.doc-type-icon{font-size:22px;flex-shrink:0;}
+.doc-type-info{}
+.doc-type-name{font-size:14px;font-weight:600;color:var(--ink);}
+.doc-type-desc{font-size:12px;color:var(--muted);margin-top:2px;}
+.doc-type-arrow{margin-left:auto;color:var(--gold);font-size:16px;}
+
+.docs-content{}
+.docs-content .section-label{text-align:left;}
+.docs-content .section-title{text-align:left;font-size:42px;}
+.docs-content .section-sub{text-align:left;margin:0 0 32px;}
+
+.feature-bullets{list-style:none;margin-bottom:36px;}
+.feature-bullets li{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:10px 0;border-bottom:1px solid rgba(14,14,14,0.06);
+}
+.feature-bullets li:last-child{border:none;}
+.bullet-icon{
+  width:28px;height:28px;flex-shrink:0;
+  background:rgba(184,134,11,0.1);
+  border-radius:7px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;margin-top:1px;
+}
+.bullet-text{font-size:14px;color:var(--muted);line-height:1.6;}
+.bullet-text strong{color:var(--ink);}
+
+/* ── CASE PRECEDENTS ── */
+.cases-section{padding:100px 60px;background:var(--paper);}
+
+.cases-preview{
+  max-width:1100px;margin:60px auto 0;
+}
+
+.cases-filter{
+  display:flex;gap:10px;margin-bottom:32px;flex-wrap:wrap;
+}
+
+.filter-btn{
+  background:var(--white);
+  border:1px solid rgba(14,14,14,0.1);
+  border-radius:20px;padding:8px 18px;
+  font-size:13px;font-weight:500;color:var(--muted);
+  cursor:pointer;transition:all 0.2s;
+  font-family:'Outfit',sans-serif;
+}
+.filter-btn:hover,.filter-btn.active{
+  background:var(--ink);color:var(--paper);border-color:var(--ink);
+}
+
+.cases-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+
+.case-card{
+  background:var(--white);
+  border:1px solid rgba(14,14,14,0.07);
+  border-radius:16px;padding:28px;
+  transition:all 0.25s;cursor:pointer;
+  text-decoration:none;color:inherit;display:block;
+}
+.case-card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 12px 40px rgba(0,0,0,0.08);
+  border-color:rgba(184,134,11,0.25);
+}
+
+.case-category{
+  display:inline-block;
+  font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;
+  border-radius:20px;padding:3px 10px;margin-bottom:14px;
+}
+.cat-theft{background:rgba(139,26,26,0.08);color:var(--crimson);}
+.cat-dv{background:rgba(139,26,26,0.08);color:var(--crimson);}
+.cat-cyber{background:rgba(74,103,65,0.1);color:var(--sage);}
+.cat-assault{background:rgba(184,134,11,0.1);color:var(--gold);}
+.cat-fraud{background:rgba(74,103,65,0.1);color:var(--sage);}
+
+.case-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:18px;font-weight:700;color:var(--ink);
+  margin-bottom:10px;line-height:1.3;
+}
+.case-meta{font-size:12px;color:var(--muted);margin-bottom:12px;}
+.case-summary{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:16px;}
+
+.case-tags{display:flex;gap:6px;flex-wrap:wrap;}
+.case-tag{
+  background:var(--paper);
+  border:1px solid var(--border);
+  border-radius:20px;padding:2px 10px;
+  font-size:11px;color:var(--gold);font-weight:500;
+}
+
+.cases-cta{text-align:center;margin-top:40px;}
+
+/* ── CHATBOT PREVIEW ── */
+.chat-section{padding:100px 60px;background:var(--ink);}
+.chat-section .section-label{color:var(--gold);}
+.chat-section .section-title{color:var(--paper);}
+.chat-section .section-sub{color:rgba(249,245,238,0.5);}
+
+.chat-preview{
+  max-width:700px;margin:60px auto 0;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:24px;overflow:hidden;
+}
+
+.chat-preview-header{
+  padding:20px 24px;
+  border-bottom:1px solid rgba(255,255,255,0.06);
+  display:flex;align-items:center;gap:12px;
+}
+
+.chat-preview-avatar{
+  width:38px;height:38px;
+  background:linear-gradient(135deg,var(--gold),var(--gold-light));
+  border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;
+}
+.chat-preview-name{font-size:15px;font-weight:600;color:var(--paper);}
+.chat-preview-status{font-size:12px;color:rgba(249,245,238,0.4);}
+.online-dot-chat{
+  width:8px;height:8px;background:#4caf82;
+  border-radius:50%;margin-left:auto;
+}
+
+.chat-messages-preview{padding:28px 24px;display:flex;flex-direction:column;gap:16px;}
+
+.chat-msg{display:flex;gap:10px;}
+.chat-msg.user{flex-direction:row-reverse;}
+
+.chat-msg-avatar{
+  width:30px;height:30px;border-radius:8px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:13px;
+  align-self:flex-end;
+}
+.chat-msg.bot .chat-msg-avatar{background:rgba(255,255,255,0.08);}
+.chat-msg.user .chat-msg-avatar{background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--ink);font-weight:700;font-size:11px;}
+
+.chat-bubble{
+  border-radius:14px;padding:12px 16px;
+  font-size:13.5px;line-height:1.6;max-width:80%;
+}
+.chat-msg.bot .chat-bubble{
+  background:rgba(255,255,255,0.07);color:rgba(249,245,238,0.9);
+  border-bottom-left-radius:4px;
+}
+.chat-msg.user .chat-bubble{
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  color:var(--ink);font-weight:500;
+  border-bottom-right-radius:4px;
+}
+
+.chat-source-tags{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;}
+.chat-source-tag{
+  background:rgba(184,134,11,0.15);
+  border:1px solid rgba(184,134,11,0.2);
+  border-radius:20px;padding:2px 8px;
+  font-size:10px;color:var(--gold);
+}
+
+.chat-input-preview{
+  padding:16px 20px;
+  border-top:1px solid rgba(255,255,255,0.06);
+  display:flex;gap:10px;align-items:center;
+}
+.chat-input-fake{
+  flex:1;background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:10px;padding:11px 16px;
+  font-size:13px;color:rgba(249,245,238,0.3);
+  font-family:'Outfit',sans-serif;
+}
+.chat-send-btn{
+  width:38px;height:38px;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  border:none;border-radius:10px;cursor:pointer;
+  color:var(--ink);font-size:15px;
+  display:flex;align-items:center;justify-content:center;
+  text-decoration:none;
+}
+
+/* ── TECH STACK ── */
+.tech-section{padding:80px 60px;background:var(--paper2);}
+.tech-grid{
+  display:flex;gap:16px;flex-wrap:wrap;justify-content:center;
+  max-width:900px;margin:40px auto 0;
+}
+.tech-pill{
+  background:var(--white);
+  border:1px solid rgba(14,14,14,0.08);
+  border-radius:10px;
+  padding:12px 20px;
+  display:flex;align-items:center;gap:10px;
+  font-size:13px;font-weight:500;color:var(--ink);
+  transition:all 0.2s;
+}
+.tech-pill:hover{border-color:var(--gold);box-shadow:0 4px 16px rgba(184,134,11,0.1);}
+.tech-pill-icon{font-size:18px;}
+
+/* ── FOOTER ── */
+footer{
+  background:var(--ink);
+  padding:60px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:24px;
+  border-top:1px solid rgba(255,255,255,0.06);
+}
+
+.footer-logo{
+  font-family:'Cormorant Garamond',serif;
+  font-size:22px;font-weight:700;color:var(--paper);
+}
+.footer-logo span{color:var(--gold);}
+
+.footer-links{display:flex;gap:28px;}
+.footer-links a{
+  font-size:13px;color:rgba(249,245,238,0.4);
+  text-decoration:none;transition:color 0.2s;
+}
+.footer-links a:hover{color:var(--paper);}
+
+.footer-copy{font-size:12px;color:rgba(249,245,238,0.25);}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(24px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+.reveal{
+  opacity:0;transform:translateY(30px);
+  transition:all 0.6s ease;
+}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+/* ── MOBILE ── */
+@media(max-width:900px){
+  nav{padding:16px 24px;}
+  nav.scrolled{padding:12px 24px;}
+  .nav-links{display:none;}
+  .section{padding:60px 24px;}
+  .hero{padding:100px 24px 60px;}
+  .features-grid{grid-template-columns:1fr;}
+  .docs-grid{grid-template-columns:1fr;}
+  .cases-grid{grid-template-columns:1fr;}
+  .steps-grid{grid-template-columns:1fr 1fr;gap:32px;}
+  .steps-grid::before{display:none;}
+  .how-section{padding:60px 24px;}
+  .docs-section,.cases-section,.chat-section,.tech-section{padding:60px 24px;}
+  footer{padding:40px 24px;flex-direction:column;text-align:center;}
+  .hero-stats{gap:32px;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="index.html" class="nav-logo">
+    <div class="nav-logo-icon">⚖️</div>
+    <span class="nav-logo-text">Legal<span>Questor</span></span>
+  </a>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="documents.html">Documents</a>
+    <a href="precedents.html">Case Law</a>
+    <a href="chatbot.html">LawBot</a>
+  </div>
+  <a href="chatbot.html" class="nav-cta">Ask LawBot →</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-decoration">⚖</div>
+
+  <div class="hero-eyebrow">⚖️ AI-Powered Legal Assistance for India</div>
+
+  <h1>
+    Justice Should Be<br>
+    <em>Accessible</em> to All
+  </h1>
+
+  <p class="hero-sub">
+    LegalQuestor helps crime victims in India understand their rights, generate legal documents, and explore case precedents — powered by AI trained on IPC, BNS, CrPC & more.
+  </p>
+
+  <div class="hero-actions">
+    <a href="chatbot.html" class="btn-primary">Talk to LawBot ⚖️</a>
+    <a href="documents.html" class="btn-outline">Generate Documents 📄</a>
+  </div>
+
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-num">91<span>%</span></div>
+      <div class="stat-label">Accuracy Rate</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">1.8<span>s</span></div>
+      <div class="stat-label">Avg Response Time</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">89<span>%</span></div>
+      <div class="stat-label">User Satisfaction</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">4<span>+</span></div>
+      <div class="stat-label">Legal Corpora</div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section section-center" id="features">
+  <div class="section-label">What We Offer</div>
+  <h2 class="section-title">Three Pillars of<br>Legal Empowerment</h2>
+  <p class="section-sub">Everything a crime victim in India needs — in one place, available 24/7, completely free.</p>
+
+  <div class="features-grid">
+    <!-- LawBot -->
+    <a href="chatbot.html" class="feature-card highlight">
+      <div class="feature-icon">🤖</div>
+      <div class="feature-tag">AI Chatbot</div>
+      <div class="feature-title">LawBot — Your Legal Assistant</div>
+      <div class="feature-desc">Ask any legal question in plain language. LawBot retrieves relevant IPC, BNS & CrPC provisions and explains them clearly.</div>
+      <ul class="feature-list">
+        <li>RAG over IPC, BNS, CrPC, PWDVA</li>
+        <li>FIR filing guidance step-by-step</li>
+        <li>Multi-turn conversation memory</li>
+        <li>Empathetic, jargon-free responses</li>
+      </ul>
+      <span class="feature-arrow">→</span>
+    </a>
+
+    <!-- Documents -->
+    <a href="documents.html" class="feature-card">
+      <div class="feature-icon">📄</div>
+      <div class="feature-tag">Document Generator</div>
+      <div class="feature-title">Generate Legal Documents</div>
+      <div class="feature-desc">Fill a simple form and get a legally compliant document — FIR, affidavit, bail application, or rent agreement — ready to download.</div>
+      <ul class="feature-list">
+        <li>FIR Application</li>
+        <li>Affidavit & Sworn Statements</li>
+        <li>Bail Application</li>
+        <li>Rent Agreement</li>
+      </ul>
+      <span class="feature-arrow">→</span>
+    </a>
+
+    <!-- Precedents -->
+    <a href="precedents.html" class="feature-card">
+      <div class="feature-icon">⚖️</div>
+      <div class="feature-tag">Case Precedents</div>
+      <div class="feature-title">Explore Case Law</div>
+      <div class="feature-desc">Browse summaries of landmark Indian court cases. Understand how similar situations were judged and what outcomes to expect.</div>
+      <ul class="feature-list">
+        <li>Landmark Supreme Court cases</li>
+        <li>Summarised in plain English</li>
+        <li>Filter by crime category</li>
+        <li>Relevant IPC sections cited</li>
+      </ul>
+      <span class="feature-arrow">→</span>
+    </a>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section">
+  <div style="text-align:center;">
+    <div class="section-label">How It Works</div>
+    <h2 class="section-title">From Question to Resolution<br>in Minutes</h2>
+    <p class="section-sub">A seamless flow designed for people who may be in distress and need help fast.</p>
+  </div>
+
+  <div class="steps-grid">
+    <div class="step reveal">
+      <div class="step-num">1</div>
+      <div class="step-title">Describe Your Situation</div>
+      <div class="step-desc">Tell LawBot what happened in plain language — no legal knowledge needed.</div>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">2</div>
+      <div class="step-title">AI Retrieves Relevant Law</div>
+      <div class="step-desc">RAG searches IPC, BNS, CrPC & PWDVA to find the exact applicable sections.</div>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">3</div>
+      <div class="step-title">Get Clear Guidance</div>
+      <div class="step-desc">Receive a plain-language explanation of your rights and next steps.</div>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">4</div>
+      <div class="step-title">Generate Your Document</div>
+      <div class="step-desc">Create and download a legally compliant FIR or affidavit instantly.</div>
+    </div>
+  </div>
+</section>
+
+<!-- DOCUMENT GENERATOR PREVIEW -->
+<section class="docs-section reveal">
+  <div class="docs-grid">
+    <div class="docs-visual">
+      <div class="doc-type-list">
+        <a href="documents.html?type=fir" class="doc-type-item active">
+          <div class="doc-type-icon">📋</div>
+          <div class="doc-type-info">
+            <div class="doc-type-name">FIR Application</div>
+            <div class="doc-type-desc">First Information Report — Police complaint</div>
+          </div>
+          <div class="doc-type-arrow">→</div>
+        </a>
+        <a href="documents.html?type=affidavit" class="doc-type-item">
+          <div class="doc-type-icon">📜</div>
+          <div class="doc-type-info">
+            <div class="doc-type-name">Affidavit</div>
+            <div class="doc-type-desc">Sworn statement before a notary</div>
+          </div>
+          <div class="doc-type-arrow">→</div>
+        </a>
+        <a href="documents.html?type=bail" class="doc-type-item">
+          <div class="doc-type-icon">🔓</div>
+          <div class="doc-type-info">
+            <div class="doc-type-name">Bail Application</div>
+            <div class="doc-type-desc">Application for release on bail</div>
+          </div>
+          <div class="doc-type-arrow">→</div>
+        </a>
+        <a href="documents.html?type=rent" class="doc-type-item">
+          <div class="doc-type-icon">🏠</div>
+          <div class="doc-type-info">
+            <div class="doc-type-name">Rent Agreement</div>
+            <div class="doc-type-desc">Residential/commercial tenancy deed</div>
+          </div>
+          <div class="doc-type-arrow">→</div>
+        </a>
+        <a href="documents.html?type=dv" class="doc-type-item">
+          <div class="doc-type-icon">🛡️</div>
+          <div class="doc-type-info">
+            <div class="doc-type-name">DV Protection Application</div>
+            <div class="doc-type-desc">Application under PWDVA 2005</div>
+          </div>
+          <div class="doc-type-arrow">→</div>
+        </a>
+      </div>
+    </div>
+
+    <div class="docs-content">
+      <div class="section-label">Document Generator</div>
+      <h2 class="section-title">Legal Documents in Minutes</h2>
+      <p class="section-sub">Fill a guided form — we handle the legal formatting. Download as a print-ready document.</p>
+
+      <ul class="feature-bullets">
+        <li>
+          <div class="bullet-icon">✅</div>
+          <div class="bullet-text"><strong>Legally compliant templates</strong> — structured as per Indian court requirements</div>
+        </li>
+        <li>
+          <div class="bullet-icon">📝</div>
+          <div class="bullet-text"><strong>Guided step-by-step forms</strong> — no legal knowledge required</div>
+        </li>
+        <li>
+          <div class="bullet-icon">⬇️</div>
+          <div class="bullet-text"><strong>Instant download</strong> — get your document as a print-ready file</div>
+        </li>
+        <li>
+          <div class="bullet-icon">🔒</div>
+          <div class="bullet-text"><strong>No data stored</strong> — your personal information stays private</div>
+        </li>
+      </ul>
+
+      <a href="documents.html" class="btn-primary">Generate a Document →</a>
+    </div>
+  </div>
+</section>
+
+<!-- CASE PRECEDENTS PREVIEW -->
+<section class="cases-section">
+  <div style="text-align:center;" class="reveal">
+    <div class="section-label">Case Precedents</div>
+    <h2 class="section-title">Learn From Landmark Cases</h2>
+    <p class="section-sub">Understand how Indian courts have ruled in situations similar to yours.</p>
+  </div>
+
+  <div class="cases-preview reveal">
+    <div class="cases-filter">
+      <button class="filter-btn active">All Cases</button>
+      <button class="filter-btn">Domestic Violence</button>
+      <button class="filter-btn">Theft & Robbery</button>
+      <button class="filter-btn">Cyber Crime</button>
+      <button class="filter-btn">Assault</button>
+      <button class="filter-btn">Fraud</button>
+    </div>
+
+    <div class="cases-grid">
+      <a href="precedents.html" class="case-card">
+        <div class="case-category cat-dv">Domestic Violence</div>
+        <div class="case-title">Indra Sarma v. V.K.V. Sarma (2013)</div>
+        <div class="case-meta">Supreme Court of India · 2013</div>
+        <div class="case-summary">Landmark ruling extending PWDVA protection to live-in relationships, establishing that cohabitation need not be marital for domestic violence protections to apply.</div>
+        <div class="case-tags">
+          <span class="case-tag">PWDVA</span>
+          <span class="case-tag">Section 2(f)</span>
+        </div>
+      </a>
+
+      <a href="precedents.html" class="case-card">
+        <div class="case-category cat-cyber">Cyber Crime</div>
+        <div class="case-title">Shreya Singhal v. Union of India (2015)</div>
+        <div class="case-meta">Supreme Court of India · 2015</div>
+        <div class="case-summary">Struck down Section 66A of the IT Act as unconstitutional, protecting freedom of speech online and setting limits on arbitrary arrest for online content.</div>
+        <div class="case-tags">
+          <span class="case-tag">IT Act</span>
+          <span class="case-tag">Article 19</span>
+        </div>
+      </a>
+
+      <a href="precedents.html" class="case-card">
+        <div class="case-category cat-assault">Assault</div>
+        <div class="case-title">State of Maharashtra v. Madhkar Narayan (1991)</div>
+        <div class="case-meta">Supreme Court of India · 1991</div>
+        <div class="case-summary">Established that every woman has the right to privacy and her testimony of assault is credible on its own — no corroboration required for conviction.</div>
+        <div class="case-tags">
+          <span class="case-tag">IPC 354</span>
+          <span class="case-tag">Women's Rights</span>
+        </div>
+      </a>
+    </div>
+
+    <div class="cases-cta">
+      <a href="precedents.html" class="btn-primary">Browse All Cases →</a>
+    </div>
+  </div>
+</section>
+
+<!-- CHATBOT PREVIEW -->
+<section class="chat-section">
+  <div style="text-align:center;" class="reveal">
+    <div class="section-label">LawBot AI</div>
+    <h2 class="section-title">Your 24/7 Legal Assistant</h2>
+    <p class="section-sub">Ask anything about Indian law. LawBot understands your situation and guides you step by step.</p>
+  </div>
+
+  <div class="chat-preview reveal">
+    <div class="chat-preview-header">
+      <div class="chat-preview-avatar">⚖️</div>
+      <div>
+        <div class="chat-preview-name">LawBot</div>
+        <div class="chat-preview-status">AI Legal Assistant · RAG-powered</div>
+      </div>
+      <div class="online-dot-chat"></div>
+    </div>
+
+    <div class="chat-messages-preview">
+      <div class="chat-msg user">
+        <div class="chat-msg-avatar">U</div>
+        <div class="chat-bubble">My husband physically assaulted me. What are my legal options?</div>
+      </div>
+      <div class="chat-msg bot">
+        <div class="chat-msg-avatar">⚖️</div>
+        <div>
+          <div class="chat-bubble">I'm sorry to hear this. You have strong legal protections. Under the <strong>Protection of Women from Domestic Violence Act (PWDVA) 2005</strong>, you can immediately apply to a Magistrate for a <strong>Protection Order</strong> (Section 18), which prohibits your husband from committing further acts. You can also file an FIR under <strong>IPC Section 498A</strong> for cruelty by husband. Would you like me to guide you through filing the complaint, or help you generate a Protection Order application?</div>
+          <div class="chat-source-tags">
+            <span class="chat-source-tag">📖 PWDVA</span>
+            <span class="chat-source-tag">📖 IPC</span>
+          </div>
+        </div>
+      </div>
+      <div class="chat-msg user">
+        <div class="chat-msg-avatar">U</div>
+        <div class="chat-bubble">Help me generate the protection order application</div>
+      </div>
+      <div class="chat-msg bot">
+        <div class="chat-msg-avatar">⚖️</div>
+        <div>
+          <div class="chat-bubble">I'll take you to the document generator now. It'll ask you a few details and produce a ready-to-submit application. 💪</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-input-preview">
+      <div class="chat-input-fake">Ask a legal question...</div>
+      <a href="chatbot.html" class="chat-send-btn">➤</a>
+    </div>
+  </div>
+</section>
+
+<!-- TECH STACK -->
+<section class="tech-section">
+  <div style="text-align:center;" class="reveal">
+    <div class="section-label">Built With</div>
+    <h2 class="section-title" style="font-size:36px;">Powered by Cutting-Edge AI</h2>
+  </div>
+  <div class="tech-grid reveal">
+    <div class="tech-pill"><span class="tech-pill-icon">🦙</span>LLaMA 3.3 70B via Groq</div>
+    <div class="tech-pill"><span class="tech-pill-icon">🔍</span>RAG Architecture</div>
+    <div class="tech-pill"><span class="tech-pill-icon">📊</span>TF-IDF + Cosine Similarity</div>
+    <div class="tech-pill"><span class="tech-pill-icon">🐍</span>Python Flask Backend</div>
+    <div class="tech-pill"><span class="tech-pill-icon">📕</span>Indian Penal Code</div>
+    <div class="tech-pill"><span class="tech-pill-icon">📙</span>Bharatiya Nyaya Sanhita</div>
+    <div class="tech-pill"><span class="tech-pill-icon">📘</span>CrPC 1973</div>
+    <div class="tech-pill"><span class="tech-pill-icon">📗</span>PWDVA 2005</div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Legal<span>Questor</span></div>
+  <div class="footer-links">
+    <a href="index.html">Home</a>
+    <a href="documents.html">Documents</a>
+    <a href="precedents.html">Case Law</a>
+    <a href="chatbot.html">LawBot</a>
+  </div>
+  <div class="footer-copy">© 2026 LegalQuestor · KIET Group of Institutions · For educational purposes</div>
+</footer>
+
+<script>
+// Navbar scroll effect
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 40);
+});
+
+// Reveal on scroll
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 80);
+    }
+  });
+}, { threshold: 0.1 });
+reveals.forEach(r => observer.observe(r));
+
+// Filter buttons
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+
+// Doc type items
+document.querySelectorAll('.doc-type-item').forEach(item => {
+  item.addEventListener('mouseenter', () => {
+    document.querySelectorAll('.doc-type-item').forEach(i => i.classList.remove('active'));
+    item.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>

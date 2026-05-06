@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Case Precedents — LegalQuestor</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0e0e0e;--ink2:#1c1c1c;--paper:#f9f5ee;--paper2:#f0ead8;
+  --gold:#b8860b;--gold2:#d4a017;--gold-light:#f5d87a;
+  --crimson:#8b1a1a;--sage:#4a6741;--blue:#1a3a6b;--muted:#6b6b6b;
+  --border:rgba(184,134,11,0.2);--white:#ffffff;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Outfit',sans-serif;background:var(--paper);color:var(--ink);min-height:100vh;}
+
+nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:16px 60px;background:rgba(249,245,238,0.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.nav-logo-icon{width:34px;height:34px;background:var(--ink);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;}
+.nav-logo-text{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;color:var(--ink);}
+.nav-logo-text span{color:var(--gold);}
+.nav-links{display:flex;align-items:center;gap:32px;}
+.nav-links a{text-decoration:none;color:var(--muted);font-size:13.5px;font-weight:500;transition:color 0.2s;}
+.nav-links a:hover,.nav-links a.active{color:var(--ink);}
+.nav-cta{background:var(--ink);color:var(--paper);border:none;border-radius:8px;padding:9px 20px;font-size:13px;font-weight:600;font-family:'Outfit',sans-serif;cursor:pointer;text-decoration:none;transition:all 0.2s;}
+.nav-cta:hover{background:var(--gold);color:var(--ink);}
+
+.page-header{background:var(--ink);padding:60px;text-align:center;position:relative;overflow:hidden;}
+.page-header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 50% 50%,rgba(184,134,11,0.1) 0%,transparent 70%);}
+.page-header-label{display:inline-block;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;position:relative;}
+.page-header h1{font-family:'Cormorant Garamond',serif;font-size:clamp(36px,5vw,60px);font-weight:700;color:var(--paper);line-height:1.1;margin-bottom:14px;position:relative;}
+.page-header p{font-size:16px;color:rgba(249,245,238,0.55);max-width:520px;margin:0 auto;line-height:1.7;position:relative;}
+
+/* SEARCH & FILTER */
+.controls{
+  padding:32px 60px;
+  background:var(--white);
+  border-bottom:1px solid rgba(14,14,14,0.07);
+  position:sticky;top:65px;z-index:50;
+}
+.controls-inner{
+  max-width:1200px;margin:0 auto;
+  display:flex;gap:16px;align-items:center;flex-wrap:wrap;
+}
+
+.search-wrap{
+  flex:1;min-width:240px;position:relative;
+}
+.search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:16px;color:var(--muted);}
+.search-input{
+  width:100%;
+  background:var(--paper);
+  border:1.5px solid rgba(14,14,14,0.12);
+  border-radius:10px;
+  padding:11px 14px 11px 42px;
+  font-size:14px;font-family:'Outfit',sans-serif;color:var(--ink);
+  outline:none;transition:border-color 0.2s,box-shadow 0.2s;
+}
+.search-input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(184,134,11,0.1);}
+.search-input::placeholder{color:var(--muted);}
+
+.filter-tabs{display:flex;gap:8px;flex-wrap:wrap;}
+.filter-tab{
+  background:var(--paper);
+  border:1.5px solid rgba(14,14,14,0.1);
+  border-radius:20px;padding:8px 16px;
+  font-size:12.5px;font-weight:500;color:var(--muted);
+  cursor:pointer;transition:all 0.2s;
+  font-family:'Outfit',sans-serif;
+  white-space:nowrap;
+}
+.filter-tab:hover{border-color:var(--ink);color:var(--ink);}
+.filter-tab.active{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+
+/* CASES GRID */
+.cases-main{max-width:1200px;margin:0 auto;padding:40px 60px;}
+
+.results-info{
+  font-size:13px;color:var(--muted);margin-bottom:24px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.results-count{font-weight:600;color:var(--ink);}
+
+.cases-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:20px;
+}
+
+.case-card{
+  background:var(--white);
+  border:1px solid rgba(14,14,14,0.07);
+  border-radius:16px;padding:0;overflow:hidden;
+  transition:all 0.25s;cursor:pointer;
+  display:flex;flex-direction:column;
+}
+.case-card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 16px 48px rgba(0,0,0,0.09);
+  border-color:rgba(184,134,11,0.25);
+}
+
+.case-card-top{padding:24px 24px 0;}
+.case-cat-bar{display:flex;align-items:center;gap:8px;margin-bottom:14px;}
+.case-category{
+  display:inline-block;
+  font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;
+  border-radius:20px;padding:3px 10px;
+}
+.cat-dv{background:rgba(139,26,26,0.08);color:var(--crimson);}
+.cat-cyber{background:rgba(74,103,65,0.1);color:var(--sage);}
+.cat-assault{background:rgba(184,134,11,0.1);color:var(--gold);}
+.cat-theft{background:rgba(26,58,107,0.08);color:var(--blue);}
+.cat-fraud{background:rgba(74,103,65,0.1);color:var(--sage);}
+.cat-murder{background:rgba(139,26,26,0.08);color:var(--crimson);}
+.cat-rights{background:rgba(184,134,11,0.1);color:var(--gold);}
+
+.court-badge{
+  font-size:10px;color:var(--muted);font-weight:500;
+  margin-left:auto;
+}
+
+.case-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:19px;font-weight:700;color:var(--ink);
+  margin-bottom:6px;line-height:1.25;
+}
+.case-year{font-size:12px;color:var(--muted);margin-bottom:12px;}
+
+.case-card-body{padding:0 24px;}
+.case-summary{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:16px;}
+
+.case-sections{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
+.case-section-tag{
+  background:var(--paper);
+  border:1px solid var(--border);
+  border-radius:20px;padding:3px 10px;
+  font-size:11px;color:var(--gold);font-weight:500;
+}
+
+.case-card-footer{
+  padding:14px 24px;
+  border-top:1px solid rgba(14,14,14,0.05);
+  display:flex;align-items:center;justify-content:space-between;
+  margin-top:auto;
+}
+.case-read-more{
+  font-size:12.5px;font-weight:600;color:var(--gold);
+  display:flex;align-items:center;gap:4px;
+  transition:gap 0.2s;
+}
+.case-card:hover .case-read-more{gap:8px;}
+.case-significance{
+  font-size:11px;color:var(--muted);
+  background:var(--paper);
+  border-radius:20px;padding:3px 10px;
+}
+
+/* CASE MODAL */
+.modal-overlay{position:fixed;inset:0;z-index:1000;background:rgba(14,14,14,0.7);display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity 0.3s;}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal{background:var(--white);border-radius:20px;width:100%;max-width:700px;max-height:88vh;overflow:hidden;display:flex;flex-direction:column;transform:scale(0.95) translateY(10px);transition:transform 0.3s;}
+.modal-overlay.open .modal{transform:scale(1) translateY(0);}
+.modal-header{padding:28px 32px 20px;border-bottom:1px solid rgba(14,14,14,0.08);}
+.modal-cat{margin-bottom:10px;}
+.modal-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700;line-height:1.2;margin-bottom:6px;}
+.modal-meta{font-size:13px;color:var(--muted);}
+.modal-close{position:absolute;top:20px;right:24px;width:34px;height:34px;border-radius:50%;background:var(--paper);border:none;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;}
+.modal-close:hover{background:var(--paper2);}
+.modal-body{flex:1;overflow-y:auto;padding:28px 32px;}
+.modal-section{margin-bottom:24px;}
+.modal-section-title{font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border);}
+.modal-text{font-size:14px;color:var(--muted);line-height:1.75;}
+.modal-text strong{color:var(--ink);}
+.modal-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;}
+.modal-tag{background:var(--paper);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;color:var(--gold);font-weight:500;}
+.modal-footer{padding:18px 32px;border-top:1px solid rgba(14,14,14,0.08);display:flex;gap:12px;justify-content:flex-end;}
+.btn-lawbot{background:var(--ink);color:var(--paper);border:none;border-radius:10px;padding:11px 24px;font-size:13px;font-weight:600;font-family:'Outfit',sans-serif;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:all 0.2s;}
+.btn-lawbot:hover{background:var(--gold);color:var(--ink);}
+.btn-close-m{background:transparent;color:var(--muted);border:1px solid rgba(14,14,14,0.15);border-radius:10px;padding:11px 18px;font-size:13px;font-family:'Outfit',sans-serif;cursor:pointer;transition:all 0.2s;}
+.btn-close-m:hover{border-color:var(--ink);color:var(--ink);}
+
+/* Empty state */
+.empty-state{text-align:center;padding:80px 24px;color:var(--muted);}
+.empty-state-icon{font-size:48px;margin-bottom:16px;}
+.empty-state h3{font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--ink);margin-bottom:8px;}
+
+@media(max-width:900px){
+  nav{padding:14px 20px;}
+  .controls{padding:20px;top:60px;}
+  .cases-main{padding:24px 20px;}
+  .cases-grid{grid-template-columns:1fr;}
+  .page-header{padding:40px 24px;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="nav-logo-icon">⚖️</div>
+    <span class="nav-logo-text">Legal<span>Questor</span></span>
+  </a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="documents.html">Documents</a>
+    <a href="precedents.html" class="active">Case Law</a>
+    <a href="chatbot.html">LawBot</a>
+  </div>
+  <a href="chatbot.html" class="nav-cta">Ask LawBot →</a>
+</nav>
+
+<div class="page-header">
+  <div class="page-header-label">Case Precedents</div>
+  <h1>Landmark Indian Case Law</h1>
+  <p>Summaries of landmark Supreme Court and High Court decisions that shaped Indian criminal law.</p>
+</div>
+
+<div class="controls">
+  <div class="controls-inner">
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" class="search-input" id="searchInput" placeholder="Search by case name, section, or keyword...">
+    </div>
+    <div class="filter-tabs">
+      <button class="filter-tab active" data-cat="all">All</button>
+      <button class="filter-tab" data-cat="Domestic Violence">Domestic Violence</button>
+      <button class="filter-tab" data-cat="Cyber Crime">Cyber Crime</button>
+      <button class="filter-tab" data-cat="Assault">Assault</button>
+      <button class="filter-tab" data-cat="Theft">Theft</button>
+      <button class="filter-tab" data-cat="Rights">Fundamental Rights</button>
+      <button class="filter-tab" data-cat="Murder">Murder</button>
+    </div>
+  </div>
+</div>
+
+<div class="cases-main">
+  <div class="results-info">
+    <span><span class="results-count" id="resultsCount">15</span> cases found</span>
+    <span style="font-size:12px;">Click any case to read full details</span>
+  </div>
+  <div class="cases-grid" id="casesGrid"></div>
+</div>
+
+<!-- CASE MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal" style="position:relative;">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-header">
+      <div class="modal-cat" id="modal-cat"></div>
+      <div class="modal-title" id="modal-title"></div>
+      <div class="modal-meta" id="modal-meta"></div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-section">
+        <div class="modal-section-title">Background</div>
+        <div class="modal-text" id="modal-background"></div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-title">Key Issues</div>
+        <div class="modal-text" id="modal-issues"></div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-title">Judgement & Significance</div>
+        <div class="modal-text" id="modal-judgement"></div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-title">Applicable Sections</div>
+        <div class="modal-tags" id="modal-tags"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-close-m" onclick="closeModal()">Close</button>
+      <a href="chatbot.html" class="btn-lawbot">⚖️ Ask LawBot about this</a>
+    </div>
+  </div>
+</div>
+
+<script>
+const CASES = [
+  {
+    id:1, category:'Domestic Violence', court:'Supreme Court',
+    title:'Indra Sarma v. V.K.V. Sarma', year:'2013',
+    summary:'Extended PWDVA protection to live-in relationships, ruling that cohabitation need not be marital for domestic violence protections to apply.',
+    background:'The appellant and respondent had a live-in relationship for years. When the relationship ended, the appellant sought protection under the PWDVA 2005. The respondent argued that the Act did not apply to live-in relationships.',
+    issues:'Whether a live-in relationship constitutes a "domestic relationship" under Section 2(f) of PWDVA 2005.',
+    judgement:'The Supreme Court held that live-in relationships are covered under the PWDVA if they are of a domestic nature. The Court laid down guidelines for determining when such relationships qualify. This landmark ruling significantly expanded protection available to women in non-marital relationships.',
+    sections:['PWDVA Section 2(f)','PWDVA Section 12','PWDVA Section 18'],
+    significance:'Landmark'
+  },
+  {
+    id:2, category:'Cyber Crime', court:'Supreme Court',
+    title:'Shreya Singhal v. Union of India', year:'2015',
+    summary:'Struck down Section 66A of the IT Act as unconstitutional, protecting freedom of speech online and setting limits on arbitrary arrest.',
+    background:'Multiple persons were arrested under Section 66A of the IT Act, 2000 for posting online content deemed offensive. Petitioners challenged the constitutionality of this provision arguing it violated Article 19(1)(a).',
+    issues:'Whether Section 66A of the IT Act violated the right to freedom of speech and expression under Article 19(1)(a) of the Constitution.',
+    judgement:'The Supreme Court unanimously struck down Section 66A as unconstitutional, finding it vague, overbroad, and chilling to free expression. The Court drew a crucial distinction between "advocacy" and "incitement." The ruling has been widely celebrated as a landmark for digital rights in India.',
+    sections:['IT Act Section 66A','Article 19(1)(a)','Article 19(2)'],
+    significance:'Landmark'
+  },
+  {
+    id:3, category:'Assault', court:'Supreme Court',
+    title:'State of Maharashtra v. Madhkar Narayan', year:'1991',
+    summary:'Established that every woman has the right to privacy and her testimony of assault is credible on its own — no corroboration required.',
+    background:'A woman alleged that a police officer had sexually assaulted her in her home. The lower courts had acquitted the accused partly on the ground that the testimony of the victim was uncorroborated.',
+    issues:'Whether the testimony of a rape/assault victim requires corroboration for conviction, and whether a woman\'s right to privacy extends to her home.',
+    judgement:'The Supreme Court held that no woman of easy virtue can be assaulted with impunity. The Court also affirmed that a prosecutrix\'s evidence can be the basis for conviction without corroboration, if found credible. This decision strengthened the rights of assault victims in Indian courts.',
+    sections:['IPC Section 354','IPC Section 376','CrPC Section 164'],
+    significance:'Landmark'
+  },
+  {
+    id:4, category:'Domestic Violence', court:'Supreme Court',
+    title:'S.R. Batra v. Taruna Batra', year:'2006',
+    summary:'Defined "shared household" under PWDVA, ruling that a wife can only claim residence in a property where she actually lived with her husband.',
+    background:'The wife sought residence rights in her mother-in-law\'s house under PWDVA. The husband contended that the property did not constitute a "shared household" as it belonged to his mother.',
+    issues:'What constitutes a "shared household" under Section 2(s) of the PWDVA 2005.',
+    judgement:'The Supreme Court held that a wife can only claim residence in the household where she has actually lived with her husband. A property solely owned by and belonging to the in-laws does not automatically become a shared household. This decision clarified the scope of residential rights under PWDVA.',
+    sections:['PWDVA Section 2(s)','PWDVA Section 17','PWDVA Section 19'],
+    significance:'Important'
+  },
+  {
+    id:5, category:'Theft', court:'Supreme Court',
+    title:'Pyare Lal Bhargava v. State of Rajasthan', year:'1963',
+    summary:'Defined the essential ingredients of theft under IPC Section 378 — dishonest intention and taking of moveable property without consent.',
+    background:'The accused, a government servant, took an official file home for personal use and returned it. The question arose whether this constituted theft under the IPC.',
+    issues:'What constitutes "dishonest intention" and "taking" for the offence of theft under IPC Section 378.',
+    judgement:'The Supreme Court laid down that even temporary taking of property with dishonest intent constitutes theft. The Court clarified that the word "takes" in Section 378 includes moving property even temporarily. The intention at the time of taking is what determines the offence.',
+    sections:['IPC Section 378','IPC Section 379','BNS Section 303'],
+    significance:'Important'
+  },
+  {
+    id:6, category:'Rights', court:'Supreme Court',
+    title:'Vishaka v. State of Rajasthan', year:'1997',
+    summary:'Laid down Vishaka Guidelines against sexual harassment at workplace, which later formed the basis of the POSH Act 2013.',
+    background:'Bhanwari Devi, a social worker in Rajasthan, was gang-raped while trying to prevent a child marriage. The case highlighted the complete absence of any legal framework addressing sexual harassment at the workplace.',
+    issues:'Whether sexual harassment at workplace violates fundamental rights under Articles 14, 15, 19, and 21 of the Constitution.',
+    judgement:'The Supreme Court issued binding guidelines — the "Vishaka Guidelines" — requiring every employer to establish mechanisms to address sexual harassment. These guidelines remained the law until the Sexual Harassment of Women at Workplace (POSH) Act was enacted in 2013.',
+    sections:['Article 14','Article 19','Article 21','IPC Section 354'],
+    significance:'Historic'
+  },
+  {
+    id:7, category:'Murder', court:'Supreme Court',
+    title:'K.M. Nanavati v. State of Maharashtra', year:'1961',
+    summary:'Last jury trial in India. Established important principles of culpable homicide vs. murder and "grave and sudden provocation" as a defence.',
+    background:'Naval commander K.M. Nanavati shot his wife\'s lover after learning of their affair. He was acquitted by a jury but the High Court reversed the verdict. The case triggered India\'s abolition of the jury system.',
+    issues:'Whether killing under "grave and sudden provocation" amounts to culpable homicide not amounting to murder (Exception 1 to Section 300 IPC).',
+    judgement:'The Supreme Court upheld the High Court\'s conviction, finding there was no sudden provocation as Nanavati had time to plan. The Court clarified the distinction between culpable homicide and murder, and the conditions under which the provocation defence applies.',
+    sections:['IPC Section 299','IPC Section 300','IPC Section 302','BNS Section 101'],
+    significance:'Historic'
+  },
+  {
+    id:8, category:'Cyber Crime', court:'Supreme Court',
+    title:'Avnish Bajaj v. State (NCT of Delhi)', year:'2008',
+    summary:'Established intermediary liability principles — online platforms cannot be held automatically liable for user-generated content.',
+    background:'An obscene MMS clip was sold on Baazee.com (eBay India). The CEO Avnish Bajaj was arrested under the IT Act and IPC for obscenity despite not having personally uploaded the content.',
+    issues:'Whether the CEO/platform can be held criminally liable for obscene user-uploaded content on their website.',
+    judgement:'The Delhi High Court ruled that criminal liability requires mens rea (guilty mind). The CEO could not be convicted for content he had no knowledge of. The decision contributed to the development of safe harbour protections for intermediaries, codified later in Section 79 of the IT Act.',
+    sections:['IT Act Section 67','IT Act Section 79','IPC Section 292'],
+    significance:'Important'
+  },
+  {
+    id:9, category:'Domestic Violence', court:'Supreme Court',
+    title:'Arnesh Kumar v. State of Bihar', year:'2014',
+    summary:'Issued mandatory guidelines restricting automatic arrest in cases under Section 498A IPC to prevent misuse of the provision.',
+    background:'Multiple complaints arose about misuse of IPC Section 498A (cruelty by husband/in-laws) to harass innocent family members through automatic arrests without investigation.',
+    issues:'Whether police can arrest individuals mechanically under Section 498A IPC without applying their mind to the necessity of arrest.',
+    judgement:'The Supreme Court issued strict guidelines requiring police to apply their mind before arresting under Section 498A. Magistrates were directed not to authorise detention casually. The Court noted the provision was being used as a tool for harassment and required a balance between protecting genuine victims and preventing misuse.',
+    sections:['IPC Section 498A','CrPC Section 41','PWDVA Section 18'],
+    significance:'Important'
+  },
+  {
+    id:10, category:'Rights', court:'Supreme Court',
+    title:'D.K. Basu v. State of West Bengal', year:'1997',
+    summary:'Established comprehensive guidelines for arrest, detention, and custody — the foundation of arrested persons\' rights in India.',
+    background:'Writ petitions were filed highlighting increasing deaths in police custody and questioning whether compensation could be awarded for violation of fundamental rights during detention.',
+    issues:'What procedures must be followed during arrest and detention to safeguard the fundamental rights of arrested persons.',
+    judgement:'The Supreme Court issued landmark "D.K. Basu Guidelines" including rights to be informed of arrest, right to have a relative notified, right to legal representation, and prohibition of torture in custody. These guidelines are now incorporated in CrPC Section 41B and the Constitutional framework.',
+    sections:['Article 21','Article 22','CrPC Section 41B','CrPC Section 50'],
+    significance:'Historic'
+  },
+  {
+    id:11, category:'Assault', court:'Supreme Court',
+    title:'Tukaram v. State of Maharashtra (Mathura Rape Case)', year:'1979',
+    summary:'Controversial acquittal that sparked nationwide outrage and led to the Criminal Law Amendment Act 1983, reforming India\'s rape laws.',
+    background:'Mathura, a 16-year-old tribal girl, was raped by policemen inside a police station. The Supreme Court acquitted the accused on the ground that she had not raised an alarm and had been in previous relationships.',
+    issues:'Whether absence of resistance or injury can be used to imply consent in rape cases involving power imbalances.',
+    judgement:'The Supreme Court\'s acquittal was met with nationwide protests from legal scholars and women\'s groups. The resulting public outrage led to the Criminal Law Amendment Act 1983 which introduced custodial rape as a specific offence with higher punishment, and shifted the burden of proof in certain rape cases.',
+    sections:['IPC Section 375','IPC Section 376','CrPC Section 228'],
+    significance:'Historic'
+  },
+  {
+    id:12, category:'Theft', court:'Supreme Court',
+    title:'State of Gujarat v. Mohanlal Jitamalji Porwal', year:'1987',
+    summary:'Clarified the distinction between theft and criminal breach of trust — key precedent for distinguishing property offences.',
+    background:'The accused was entrusted with goods for safe custody but disposed of them for personal gain. The question arose whether the act constituted theft or criminal breach of trust.',
+    issues:'What distinguishes theft (IPC Section 378) from criminal breach of trust (IPC Section 405) when property is taken by a person already in possession.',
+    judgement:'The Supreme Court clarified that theft involves taking property from another\'s possession, while criminal breach of trust involves misappropriation by a person already entrusted with the property. The distinction lies in the mode of initial acquisition of possession.',
+    sections:['IPC Section 378','IPC Section 405','IPC Section 406','BNS Section 303'],
+    significance:'Important'
+  },
+  {
+    id:13, category:'Murder', court:'Supreme Court',
+    title:'Bachan Singh v. State of Punjab', year:'1980',
+    summary:'Established the "rarest of rare" doctrine — the death penalty in India can only be imposed in the most exceptional circumstances.',
+    background:'After the Constitution Bench upheld the constitutional validity of the death penalty in Jagmohan Singh (1973), Bachan Singh challenged whether the unguided discretion given to courts to impose death was constitutional.',
+    issues:'Whether the death penalty as provided in IPC Section 302 is constitutionally valid, and what principles should guide courts in imposing it.',
+    judgement:'The Supreme Court upheld the constitutional validity of the death penalty but established the "rarest of rare" doctrine — capital punishment should be imposed only when the option of imprisonment for life is "unquestionably foreclosed." This doctrine remains the cornerstone of death penalty jurisprudence in India.',
+    sections:['IPC Section 302','Article 21','CrPC Section 354(3)'],
+    significance:'Historic'
+  },
+  {
+    id:14, category:'Rights', court:'Supreme Court',
+    title:'Hussainara Khatoon v. State of Bihar', year:'1979',
+    summary:'Established the right to speedy trial as a fundamental right under Article 21 — led to release of thousands of under-trial prisoners.',
+    background:'A news report exposed that thousands of under-trial prisoners in Bihar had been in jail for periods longer than the maximum sentence for their alleged offences.',
+    issues:'Whether the right to life under Article 21 includes the right to a speedy trial.',
+    judgement:'The Supreme Court held that the right to a speedy trial is a fundamental right implicit in the right to life and liberty. The Court directed immediate release of undertrial prisoners who had served longer than the maximum sentence. This was India\'s first Public Interest Litigation and led to significant prison reforms.',
+    sections:['Article 21','Article 22','CrPC Section 436A'],
+    significance:'Historic'
+  },
+  {
+    id:15, category:'Cyber Crime', court:'Supreme Court',
+    title:'Justice K.S. Puttaswamy v. Union of India', year:'2017',
+    summary:'Nine-judge bench unanimously declared privacy as a fundamental right under the Indian Constitution.',
+    background:'The case arose from challenges to the Aadhaar scheme. However, the government argued that privacy was not a fundamental right under the Constitution, relying on older precedents.',
+    issues:'Whether the right to privacy is a fundamental right under the Constitution of India.',
+    judgement:'A nine-judge Constitutional Bench unanimously held that the right to privacy is a fundamental right under Articles 14, 19, and 21. The judgment overruled earlier decisions to the contrary and has become the constitutional foundation for data protection and digital rights in India.',
+    sections:['Article 14','Article 19','Article 21'],
+    significance:'Historic'
+  }
+];
+
+let activeCategory = 'all';
+let searchQuery = '';
+
+function catClass(cat) {
+  const map = {'Domestic Violence':'cat-dv','Cyber Crime':'cat-cyber','Assault':'cat-assault','Theft':'cat-theft','Fraud':'cat-fraud','Murder':'cat-murder','Rights':'cat-rights'};
+  return map[cat] || 'cat-rights';
+}
+
+function sigColor(s) {
+  if (s==='Historic') return '#8b1a1a';
+  if (s==='Landmark') return '#b8860b';
+  return '#4a6741';
+}
+
+function renderCases() {
+  const filtered = CASES.filter(c => {
+    const matchCat = activeCategory === 'all' || c.category === activeCategory;
+    const q = searchQuery.toLowerCase();
+    const matchSearch = !q || c.title.toLowerCase().includes(q) || c.summary.toLowerCase().includes(q) || c.sections.some(s => s.toLowerCase().includes(q)) || c.category.toLowerCase().includes(q) || c.year.includes(q);
+    return matchCat && matchSearch;
+  });
+
+  document.getElementById('resultsCount').textContent = filtered.length;
+  const grid = document.getElementById('casesGrid');
+
+  if (filtered.length === 0) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-state-icon">⚖️</div><h3>No cases found</h3><p>Try a different search term or category</p></div>`;
+    return;
+  }
+
+  grid.innerHTML = filtered.map(c => `
+    <div class="case-card" onclick="openCase(${c.id})">
+      <div class="case-card-top">
+        <div class="case-cat-bar">
+          <span class="case-category ${catClass(c.category)}">${c.category}</span>
+          <span class="court-badge">${c.court}</span>
+        </div>
+        <div class="case-title">${c.title}</div>
+        <div class="case-year">${c.year}</div>
+      </div>
+      <div class="case-card-body">
+        <div class="case-summary">${c.summary}</div>
+        <div class="case-sections">${c.sections.map(s=>`<span class="case-section-tag">${s}</span>`).join('')}</div>
+      </div>
+      <div class="case-card-footer">
+        <span class="case-read-more">Read full case →</span>
+        <span class="case-significance" style="color:${sigColor(c.significance)};background:${sigColor(c.significance)}18;">${c.significance}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openCase(id) {
+  const c = CASES.find(x => x.id === id);
+  if (!c) return;
+  document.getElementById('modal-cat').innerHTML = `<span class="case-category ${catClass(c.category)}">${c.category}</span>`;
+  document.getElementById('modal-title').textContent = c.title;
+  document.getElementById('modal-meta').textContent = `${c.court} of India · ${c.year}`;
+  document.getElementById('modal-background').innerHTML = c.background;
+  document.getElementById('modal-issues').innerHTML = c.issues;
+  document.getElementById('modal-judgement').innerHTML = c.judgement;
+  document.getElementById('modal-tags').innerHTML = c.sections.map(s=>`<span class="modal-tag">${s}</span>`).join('');
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+}
+
+// Filter tabs
+document.querySelectorAll('.filter-tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeCategory = btn.dataset.cat;
+    renderCases();
+  });
+});
+
+// Search
+document.getElementById('searchInput').addEventListener('input', e => {
+  searchQuery = e.target.value;
+  renderCases();
+});
+
+// Close modal on overlay click
+document.getElementById('modal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+renderCases();
+</script>
+</body>
+</html>

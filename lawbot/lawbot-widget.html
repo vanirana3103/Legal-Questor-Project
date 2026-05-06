@@ -1,0 +1,131 @@
+<!--
+  ============================================================
+  LAWBOT FLOATING WIDGET
+  ============================================================
+  Paste this entire block just before </body> in ANY page of
+  your LegalQuestor website (index.html, cyber.html, etc.)
+  ============================================================
+-->
+
+<!-- LawBot Styles -->
+<style>
+  #lb-fab {
+    position: fixed; bottom: 28px; right: 28px; z-index: 9999;
+    width: 64px; height: 64px;
+    background: linear-gradient(135deg, #0d1b2a, #1a3a5c);
+    border-radius: 50%; border: 3px solid rgba(201,168,76,0.5);
+    cursor: pointer; box-shadow: 0 6px 24px rgba(0,0,0,0.35);
+    font-size: 28px; display: flex; align-items: center; justify-content: center;
+    transition: all 0.25s cubic-bezier(.34,1.56,.64,1);
+    animation: lb-pulse 2.5s ease-in-out infinite;
+  }
+  #lb-fab:hover {
+    transform: scale(1.12);
+    box-shadow: 0 10px 32px rgba(201,168,76,0.3);
+    border-color: rgba(201,168,76,0.8);
+  }
+  @keyframes lb-pulse {
+    0%,100% { box-shadow: 0 6px 24px rgba(0,0,0,0.35), 0 0 0 0 rgba(201,168,76,0.4); }
+    50%      { box-shadow: 0 6px 24px rgba(0,0,0,0.35), 0 0 0 10px rgba(201,168,76,0); }
+  }
+  #lb-badge {
+    position: absolute; top: 2px; right: 2px;
+    width: 14px; height: 14px; background: #4caf82;
+    border-radius: 50%; border: 2px solid white;
+  }
+  #lb-tooltip {
+    position: fixed; bottom: 104px; right: 28px; z-index: 9998;
+    background: #0d1b2a; color: #fff;
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 10px; padding: 8px 14px;
+    font-family: 'DM Sans', sans-serif; font-size: 13px;
+    white-space: nowrap; opacity: 0; pointer-events: none;
+    transform: translateY(6px);
+    transition: all 0.2s ease;
+  }
+  #lb-tooltip::after {
+    content: ''; position: absolute; bottom: -6px; right: 24px;
+    border: 6px solid transparent; border-top-color: #0d1b2a;
+    border-bottom: none;
+  }
+  #lb-fab:hover + #lb-tooltip,
+  #lb-fab:hover ~ #lb-tooltip { opacity: 1; transform: translateY(0); }
+
+  #lb-iframe-wrap {
+    position: fixed; bottom: 108px; right: 28px; z-index: 9998;
+    width: 420px; height: 620px;
+    background: #fff; border-radius: 18px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    overflow: hidden; display: none;
+    border: 1px solid rgba(0,0,0,0.1);
+    animation: lb-pop 0.3s cubic-bezier(.34,1.56,.64,1);
+  }
+  @keyframes lb-pop {
+    from { transform: scale(0.8) translateY(20px); opacity: 0; }
+    to   { transform: scale(1) translateY(0);      opacity: 1; }
+  }
+  #lb-iframe-wrap.open { display: block; }
+  #lb-iframe-wrap iframe { width: 100%; height: 100%; border: none; }
+
+  #lb-close {
+    position: absolute; top: 12px; right: 14px; z-index: 1;
+    background: rgba(0,0,0,0.2); border: none; border-radius: 50%;
+    width: 28px; height: 28px; cursor: pointer; color: white;
+    font-size: 16px; display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s;
+  }
+  #lb-close:hover { background: rgba(0,0,0,0.4); }
+
+  @media (max-width: 480px) {
+    #lb-iframe-wrap {
+      width: calc(100vw - 16px); height: calc(100vh - 120px);
+      right: 8px; bottom: 96px; border-radius: 14px;
+    }
+  }
+</style>
+
+<!-- LawBot Floating Button -->
+<div id="lb-fab" onclick="lbToggle()" title="Ask LawBot">
+  ⚖️
+  <div id="lb-badge"></div>
+</div>
+<div id="lb-tooltip">Ask LawBot — Your Legal AI</div>
+
+<!-- LawBot Chat Panel -->
+<div id="lb-iframe-wrap">
+  <button id="lb-close" onclick="lbClose()">✕</button>
+  <iframe id="lb-iframe" src="" title="LawBot Legal Assistant" loading="lazy"></iframe>
+</div>
+
+<script>
+  var LB_URL = 'http://localhost:5000';  // ← Change this to your deployed URL
+  var lbOpen = false;
+
+  function lbToggle() {
+    lbOpen ? lbClose() : lbShow();
+  }
+
+  function lbShow() {
+    lbOpen = true;
+    var wrap = document.getElementById('lb-iframe-wrap');
+    var iframe = document.getElementById('lb-iframe');
+    // Load iframe only on first open
+    if (!iframe.src || iframe.src === 'about:blank') {
+      iframe.src = LB_URL;
+    }
+    wrap.classList.add('open');
+    document.getElementById('lb-fab').style.transform = 'scale(1.05) rotate(10deg)';
+  }
+
+  function lbClose() {
+    lbOpen = false;
+    document.getElementById('lb-iframe-wrap').classList.remove('open');
+    document.getElementById('lb-fab').style.transform = '';
+  }
+
+  // Close on Escape key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lbOpen) lbClose();
+  });
+</script>
+<!-- End LawBot Widget -->

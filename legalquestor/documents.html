@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Generate Legal Documents — LegalQuestor</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0e0e0e;--ink2:#1c1c1c;--paper:#f9f5ee;--paper2:#f0ead8;
+  --gold:#b8860b;--gold2:#d4a017;--gold-light:#f5d87a;
+  --crimson:#8b1a1a;--sage:#4a6741;--muted:#6b6b6b;
+  --border:rgba(184,134,11,0.2);--white:#ffffff;
+  --success:#2d7a4f;--error:#c0392b;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Outfit',sans-serif;background:var(--paper);color:var(--ink);min-height:100vh;}
+
+/* NAV */
+nav{
+  position:sticky;top:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 60px;
+  background:rgba(249,245,238,0.95);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.nav-logo-icon{width:34px;height:34px;background:var(--ink);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;}
+.nav-logo-text{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;color:var(--ink);}
+.nav-logo-text span{color:var(--gold);}
+.nav-links{display:flex;align-items:center;gap:32px;}
+.nav-links a{text-decoration:none;color:var(--muted);font-size:13.5px;font-weight:500;transition:color 0.2s;}
+.nav-links a:hover,.nav-links a.active{color:var(--ink);}
+.nav-cta{background:var(--ink);color:var(--paper);border:none;border-radius:8px;padding:9px 20px;font-size:13px;font-weight:600;font-family:'Outfit',sans-serif;cursor:pointer;text-decoration:none;transition:all 0.2s;}
+.nav-cta:hover{background:var(--gold);color:var(--ink);}
+
+/* PAGE HEADER */
+.page-header{
+  background:var(--ink);padding:60px;
+  text-align:center;position:relative;overflow:hidden;
+}
+.page-header::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 80% at 50% 50%,rgba(184,134,11,0.1) 0%,transparent 70%);
+}
+.page-header-label{
+  display:inline-block;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;
+  color:var(--gold);margin-bottom:14px;position:relative;
+}
+.page-header h1{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(36px,5vw,60px);font-weight:700;
+  color:var(--paper);line-height:1.1;margin-bottom:14px;position:relative;
+}
+.page-header p{font-size:16px;color:rgba(249,245,238,0.55);max-width:520px;margin:0 auto;line-height:1.7;position:relative;}
+
+/* MAIN LAYOUT */
+.main-layout{
+  display:grid;grid-template-columns:300px 1fr;
+  gap:0;max-width:1200px;margin:0 auto;
+  padding:40px 60px;align-items:start;
+}
+
+/* DOC TYPE SIDEBAR */
+.doc-sidebar{
+  position:sticky;top:90px;
+  background:var(--white);
+  border:1px solid rgba(14,14,14,0.08);
+  border-radius:16px;overflow:hidden;
+}
+.doc-sidebar-title{
+  padding:18px 20px;
+  border-bottom:1px solid rgba(14,14,14,0.06);
+  font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);
+}
+.doc-type-btn{
+  display:flex;align-items:center;gap:14px;
+  width:100%;padding:16px 20px;
+  background:none;border:none;border-bottom:1px solid rgba(14,14,14,0.05);
+  cursor:pointer;font-family:'Outfit',sans-serif;
+  text-align:left;transition:all 0.2s;
+  text-decoration:none;color:inherit;
+}
+.doc-type-btn:last-child{border-bottom:none;}
+.doc-type-btn:hover{background:var(--paper);}
+.doc-type-btn.active{background:rgba(184,134,11,0.06);border-left:3px solid var(--gold);}
+.doc-btn-icon{font-size:20px;flex-shrink:0;}
+.doc-btn-info{}
+.doc-btn-name{font-size:13.5px;font-weight:600;color:var(--ink);}
+.doc-btn-desc{font-size:11.5px;color:var(--muted);margin-top:2px;}
+
+/* FORM AREA */
+.form-area{padding-left:36px;}
+
+.form-card{
+  background:var(--white);
+  border:1px solid rgba(14,14,14,0.08);
+  border-radius:20px;overflow:hidden;
+  display:none;
+}
+.form-card.active{display:block;}
+
+.form-card-header{
+  padding:32px 40px 24px;
+  border-bottom:1px solid rgba(14,14,14,0.06);
+  display:flex;align-items:center;gap:16px;
+}
+.form-header-icon{
+  width:52px;height:52px;background:rgba(184,134,11,0.1);
+  border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;
+}
+.form-header-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:28px;font-weight:700;color:var(--ink);
+}
+.form-header-sub{font-size:13px;color:var(--muted);margin-top:4px;}
+
+.form-body{padding:36px 40px;}
+
+/* FORM FIELDS */
+.form-section-title{
+  font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--gold);margin-bottom:20px;padding-bottom:8px;
+  border-bottom:1px solid var(--border);
+}
+
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;}
+.form-row.full{grid-template-columns:1fr;}
+.form-row.three{grid-template-columns:1fr 1fr 1fr;}
+
+.form-group{display:flex;flex-direction:column;gap:6px;}
+
+label{font-size:12.5px;font-weight:600;color:var(--ink);letter-spacing:0.3px;}
+label .req{color:var(--crimson);}
+
+input[type=text],input[type=date],input[type=email],input[type=tel],select,textarea{
+  width:100%;
+  background:var(--paper);
+  border:1.5px solid rgba(14,14,14,0.12);
+  border-radius:10px;
+  padding:11px 14px;
+  font-size:14px;font-family:'Outfit',sans-serif;color:var(--ink);
+  outline:none;transition:border-color 0.2s,box-shadow 0.2s;
+}
+input:focus,select:focus,textarea:focus{
+  border-color:var(--gold);
+  box-shadow:0 0 0 3px rgba(184,134,11,0.1);
+}
+input::placeholder,textarea::placeholder{color:var(--muted);}
+textarea{resize:vertical;min-height:100px;}
+select{cursor:pointer;}
+
+.form-hint{font-size:11.5px;color:var(--muted);margin-top:4px;}
+
+.form-divider{height:1px;background:rgba(14,14,14,0.06);margin:28px 0;}
+
+.form-actions{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:24px 40px;
+  border-top:1px solid rgba(14,14,14,0.06);
+  background:var(--paper);
+  gap:16px;
+  flex-wrap:wrap;
+}
+
+.form-notice{
+  display:flex;align-items:center;gap:8px;
+  font-size:12px;color:var(--muted);
+}
+
+.btn-generate{
+  background:var(--ink);color:var(--paper);
+  border:none;border-radius:10px;
+  padding:14px 32px;font-size:14px;font-weight:600;
+  font-family:'Outfit',sans-serif;cursor:pointer;
+  transition:all 0.2s;
+  display:flex;align-items:center;gap:8px;
+}
+.btn-generate:hover{background:var(--gold);color:var(--ink);}
+.btn-generate:disabled{opacity:0.5;cursor:not-allowed;}
+
+/* PREVIEW MODAL */
+.modal-overlay{
+  position:fixed;inset:0;z-index:1000;
+  background:rgba(14,14,14,0.7);
+  display:flex;align-items:center;justify-content:center;
+  padding:24px;
+  opacity:0;pointer-events:none;
+  transition:opacity 0.3s;
+}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+
+.modal{
+  background:var(--white);
+  border-radius:20px;
+  width:100%;max-width:780px;
+  max-height:90vh;overflow:hidden;
+  display:flex;flex-direction:column;
+  transform:scale(0.95) translateY(10px);
+  transition:transform 0.3s;
+}
+.modal-overlay.open .modal{transform:scale(1) translateY(0);}
+
+.modal-header{
+  padding:24px 32px;
+  border-bottom:1px solid rgba(14,14,14,0.08);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.modal-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;}
+.modal-close{
+  width:36px;height:36px;border-radius:50%;
+  background:var(--paper);border:none;cursor:pointer;
+  font-size:16px;display:flex;align-items:center;justify-content:center;
+  transition:background 0.2s;
+}
+.modal-close:hover{background:var(--paper2);}
+
+.modal-body{
+  flex:1;overflow-y:auto;
+  padding:32px;
+}
+
+.doc-preview{
+  font-family:'Cormorant Garamond',serif;
+  font-size:15px;line-height:1.9;color:var(--ink);
+  background:var(--paper);
+  border:1px solid var(--border);
+  border-radius:12px;padding:40px;
+  white-space:pre-wrap;
+}
+
+.modal-footer{
+  padding:20px 32px;
+  border-top:1px solid rgba(14,14,14,0.08);
+  display:flex;gap:12px;justify-content:flex-end;
+}
+
+.btn-download{
+  background:var(--ink);color:var(--paper);
+  border:none;border-radius:10px;
+  padding:12px 28px;font-size:14px;font-weight:600;
+  font-family:'Outfit',sans-serif;cursor:pointer;
+  transition:all 0.2s;display:flex;align-items:center;gap:8px;
+}
+.btn-download:hover{background:var(--gold);color:var(--ink);}
+
+.btn-cancel{
+  background:transparent;color:var(--muted);
+  border:1px solid rgba(14,14,14,0.15);border-radius:10px;
+  padding:12px 20px;font-size:14px;font-weight:500;
+  font-family:'Outfit',sans-serif;cursor:pointer;
+  transition:all 0.2s;
+}
+.btn-cancel:hover{border-color:var(--ink);color:var(--ink);}
+
+/* Toast */
+.toast{
+  position:fixed;bottom:24px;right:24px;z-index:9999;
+  background:var(--success);color:#fff;
+  border-radius:12px;padding:14px 20px;
+  font-size:14px;font-weight:500;
+  box-shadow:0 8px 24px rgba(0,0,0,0.15);
+  transform:translateY(80px);opacity:0;
+  transition:all 0.3s;display:flex;align-items:center;gap:8px;
+}
+.toast.show{transform:translateY(0);opacity:1;}
+
+@media(max-width:900px){
+  nav{padding:14px 20px;}
+  .page-header{padding:40px 24px;}
+  .main-layout{grid-template-columns:1fr;padding:24px 20px;}
+  .doc-sidebar{position:static;display:flex;overflow-x:auto;border-radius:12px;}
+  .doc-sidebar-title{display:none;}
+  .doc-type-btn{flex-shrink:0;border-bottom:none;border-right:1px solid rgba(14,14,14,0.05);}
+  .doc-type-btn.active{border-left:none;border-bottom:3px solid var(--gold);}
+  .form-area{padding-left:0;margin-top:20px;}
+  .form-body{padding:24px 20px;}
+  .form-card-header{padding:24px 20px 18px;}
+  .form-row{grid-template-columns:1fr;}
+  .form-row.three{grid-template-columns:1fr;}
+  .form-actions{padding:18px 20px;}
+  .modal-body{padding:20px;}
+  .doc-preview{padding:24px 20px;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="nav-logo-icon">⚖️</div>
+    <span class="nav-logo-text">Legal<span>Questor</span></span>
+  </a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="documents.html" class="active">Documents</a>
+    <a href="precedents.html">Case Law</a>
+    <a href="chatbot.html">LawBot</a>
+  </div>
+  <a href="chatbot.html" class="nav-cta">Ask LawBot →</a>
+</nav>
+
+<div class="page-header">
+  <div class="page-header-label">Document Generator</div>
+  <h1>Generate Legal Documents</h1>
+  <p>Fill a guided form and download a legally compliant document instantly — no lawyer needed.</p>
+</div>
+
+<div class="main-layout">
+  <!-- Sidebar -->
+  <div class="doc-sidebar">
+    <div class="doc-sidebar-title">Select Document Type</div>
+    <button class="doc-type-btn active" onclick="showForm('fir')">
+      <span class="doc-btn-icon">📋</span>
+      <div class="doc-btn-info">
+        <div class="doc-btn-name">FIR Application</div>
+        <div class="doc-btn-desc">Police complaint</div>
+      </div>
+    </button>
+    <button class="doc-type-btn" onclick="showForm('affidavit')">
+      <span class="doc-btn-icon">📜</span>
+      <div class="doc-btn-info">
+        <div class="doc-btn-name">Affidavit</div>
+        <div class="doc-btn-desc">Sworn statement</div>
+      </div>
+    </button>
+    <button class="doc-type-btn" onclick="showForm('bail')">
+      <span class="doc-btn-icon">🔓</span>
+      <div class="doc-btn-info">
+        <div class="doc-btn-name">Bail Application</div>
+        <div class="doc-btn-desc">Release application</div>
+      </div>
+    </button>
+    <button class="doc-type-btn" onclick="showForm('rent')">
+      <span class="doc-btn-icon">🏠</span>
+      <div class="doc-btn-info">
+        <div class="doc-btn-name">Rent Agreement</div>
+        <div class="doc-btn-desc">Tenancy deed</div>
+      </div>
+    </button>
+    <button class="doc-type-btn" onclick="showForm('dv')">
+      <span class="doc-btn-icon">🛡️</span>
+      <div class="doc-btn-info">
+        <div class="doc-btn-name">DV Protection</div>
+        <div class="doc-btn-desc">PWDVA application</div>
+      </div>
+    </button>
+  </div>
+
+  <!-- Forms -->
+  <div class="form-area">
+
+    <!-- FIR Form -->
+    <div class="form-card active" id="form-fir">
+      <div class="form-card-header">
+        <div class="form-header-icon">📋</div>
+        <div>
+          <div class="form-header-title">FIR Application</div>
+          <div class="form-header-sub">First Information Report — Section 154 CrPC</div>
+        </div>
+      </div>
+      <div class="form-body">
+        <div class="form-section-title">Complainant Details</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Full Name <span class="req">*</span></label>
+            <input type="text" id="fir-name" placeholder="e.g. Priya Sharma">
+          </div>
+          <div class="form-group">
+            <label>Father's / Husband's Name <span class="req">*</span></label>
+            <input type="text" id="fir-guardian" placeholder="e.g. Ramesh Sharma">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Age <span class="req">*</span></label>
+            <input type="text" id="fir-age" placeholder="e.g. 28">
+          </div>
+          <div class="form-group">
+            <label>Occupation</label>
+            <input type="text" id="fir-occupation" placeholder="e.g. Teacher">
+          </div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group">
+            <label>Full Address <span class="req">*</span></label>
+            <input type="text" id="fir-address" placeholder="House No, Street, Area, City, State, PIN">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Phone Number</label>
+            <input type="tel" id="fir-phone" placeholder="e.g. 9876543210">
+          </div>
+          <div class="form-group">
+            <label>Date of Incident <span class="req">*</span></label>
+            <input type="date" id="fir-date">
+          </div>
+        </div>
+
+        <div class="form-divider"></div>
+        <div class="form-section-title">Incident Details</div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Type of Offence <span class="req">*</span></label>
+            <select id="fir-offence">
+              <option value="">Select offence type</option>
+              <option>Theft / Robbery</option>
+              <option>Physical Assault</option>
+              <option>Domestic Violence</option>
+              <option>Cyber Crime / Online Fraud</option>
+              <option>Sexual Harassment</option>
+              <option>Cheating / Fraud</option>
+              <option>Kidnapping / Abduction</option>
+              <option>Property Dispute</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Place of Incident <span class="req">*</span></label>
+            <input type="text" id="fir-place" placeholder="e.g. Near XYZ Market, Delhi">
+          </div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group">
+            <label>Name(s) of Accused (if known)</label>
+            <input type="text" id="fir-accused" placeholder="e.g. Unknown / John Doe, 45 yrs, resident of...">
+          </div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group">
+            <label>Detailed Description of the Incident <span class="req">*</span></label>
+            <textarea id="fir-description" rows="5" placeholder="Describe the incident in detail — what happened, when, where, how, and any witnesses..."></textarea>
+            <div class="form-hint">Be as specific as possible. This will be used directly in the FIR.</div>
+          </div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group">
+            <label>List of Items Lost / Damaged (if any)</label>
+            <textarea id="fir-items" rows="3" placeholder="e.g. Mobile phone (Samsung Galaxy), Gold chain approx. 10gm, Cash Rs.5000..."></textarea>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Police Station Name <span class="req">*</span></label>
+            <input type="text" id="fir-ps" placeholder="e.g. Saket Police Station">
+          </div>
+          <div class="form-group">
+            <label>District <span class="req">*</span></label>
+            <input type="text" id="fir-district" placeholder="e.g. South Delhi">
+          </div>
+        </div>
+      </div>
+      <div class="form-actions">
+        <div class="form-notice">🔒 Your data is never stored or shared</div>
+        <button class="btn-generate" onclick="generateDoc('fir')">Generate FIR Document ⬇️</button>
+      </div>
+    </div>
+
+    <!-- AFFIDAVIT Form -->
+    <div class="form-card" id="form-affidavit">
+      <div class="form-card-header">
+        <div class="form-header-icon">📜</div>
+        <div>
+          <div class="form-header-title">Affidavit</div>
+          <div class="form-header-sub">Sworn Statement on Stamp Paper</div>
+        </div>
+      </div>
+      <div class="form-body">
+        <div class="form-section-title">Deponent Information</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Full Name <span class="req">*</span></label>
+            <input type="text" id="aff-name" placeholder="e.g. Rahul Verma">
+          </div>
+          <div class="form-group">
+            <label>Son/Daughter/Wife of <span class="req">*</span></label>
+            <input type="text" id="aff-guardian" placeholder="e.g. Suresh Verma">
+          </div>
+        </div>
+        <div class="form-row three">
+          <div class="form-group">
+            <label>Age <span class="req">*</span></label>
+            <input type="text" id="aff-age" placeholder="e.g. 35">
+          </div>
+          <div class="form-group">
+            <label>Nationality</label>
+            <input type="text" id="aff-nationality" placeholder="Indian" value="Indian">
+          </div>
+          <div class="form-group">
+            <label>Occupation</label>
+            <input type="text" id="aff-occupation" placeholder="e.g. Business">
+          </div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group">
+            <label>Permanent Address <span class="req">*</span></label>
+            <input type="text" id="aff-address" placeholder="Full address with PIN code">
+          </div>
+        </div>
+
+        <div class="form-divider"></div>
+        <div class="form-section-title">Affidavit Purpose</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Purpose of Affidavit <span class="req">*</span></label>
+            <select id="aff-purpose">
+              <option value="">Select purpose</option>
+              <option>Name Change</option>
+              <option>Address Proof</option>
+              <option>Income Declaration</option>
+              <option>Single Status / Unmarried</option>
+              <option>Lost Document</option>
+              <option>Character Certificate</option>
+              <option>General Purpose</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Date of Affidavit <span class="req">*</span></label>
+            <input type="date" id="aff-date">
+          </div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group">
+            <label>Statement / Declaration <span class="req">*</span></label>
+            <textarea id="aff-statement" rows="6" placeholder="I hereby solemnly affirm and declare that... (write the full statement you are swearing to)"></textarea>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Place of Execution <span class="req">*</span></label>
+            <input type="text" id="aff-place" placeholder="e.g. New Delhi">
+          </div>
+        </div>
+      </div>
+      <div class="form-actions">
+        <div class="form-notice">🔒 Your data is never stored or shared</div>
+        <button class="btn-generate" onclick="generateDoc('affidavit')">Generate Affidavit ⬇️</button>
+      </div>
+    </div>
+
+    <!-- BAIL Form -->
+    <div class="form-card" id="form-bail">
+      <div class="form-card-header">
+        <div class="form-header-icon">🔓</div>
+        <div>
+          <div class="form-header-title">Bail Application</div>
+          <div class="form-header-sub">Application for Release on Bail — Section 437/439 CrPC</div>
+        </div>
+      </div>
+      <div class="form-body">
+        <div class="form-section-title">Applicant (Accused) Details</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Full Name of Accused <span class="req">*</span></label>
+            <input type="text" id="bail-name" placeholder="e.g. Amit Kumar">
+          </div>
+          <div class="form-group">
+            <label>Son/Daughter of <span class="req">*</span></label>
+            <input type="text" id="bail-guardian" placeholder="e.g. Vijay Kumar">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Age <span class="req">*</span></label>
+            <input type="text" id="bail-age" placeholder="e.g. 32">
+          </div>
+          <div class="form-group">
+            <label>Occupation</label>
+            <input type="text" id="bail-occupation" placeholder="e.g. Shopkeeper">
+          </div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group">
+            <label>Address <span class="req">*</span></label>
+            <input type="text" id="bail-address" placeholder="Full permanent address">
+          </div>
+        </div>
+
+        <div class="form-divider"></div>
+        <div class="form-section-title">Case Details</div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>FIR / Case Number <span class="req">*</span></label>
+            <input type="text" id="bail-case" placeholder="e.g. FIR No. 245/2024">
+          </div>
+          <div class="form-group">
+            <label>Date of Arrest <span class="req">*</span></label>
+            <input type="date" id="bail-arrest-date">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Offence(s) Charged With <span class="req">*</span></label>
+            <input type="text" id="bail-offence" placeholder="e.g. IPC Section 420 (Cheating)">
+          </div>
+          <div class="form-group">
+            <label>Court Name <span class="req">*</span></label>
+            <input type="text" id="bail-court" placeholder="e.g. Sessions Court, Delhi">
+          </div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group">
+            <label>Grounds for Bail <span class="req">*</span></label>
+            <textarea id="bail-grounds" rows="5" placeholder="e.g. The applicant has deep roots in the community, is the sole breadwinner of the family, has no prior criminal record, and is willing to cooperate with investigation..."></textarea>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Name of Surety (Guarantor)</label>
+            <input type="text" id="bail-surety" placeholder="e.g. Ramesh Kumar (Father)">
+          </div>
+          <div class="form-group">
+            <label>Date of Application <span class="req">*</span></label>
+            <input type="date" id="bail-date">
+          </div>
+        </div>
+      </div>
+      <div class="form-actions">
+        <div class="form-notice">🔒 Your data is never stored or shared</div>
+        <button class="btn-generate" onclick="generateDoc('bail')">Generate Bail Application ⬇️</button>
+      </div>
+    </div>
+
+    <!-- RENT Form -->
+    <div class="form-card" id="form-rent">
+      <div class="form-card-header">
+        <div class="form-header-icon">🏠</div>
+        <div>
+          <div class="form-header-title">Rent Agreement</div>
+          <div class="form-header-sub">Residential / Commercial Tenancy Agreement</div>
+        </div>
+      </div>
+      <div class="form-body">
+        <div class="form-section-title">Landlord Details</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Landlord Full Name <span class="req">*</span></label>
+            <input type="text" id="rent-landlord" placeholder="e.g. Suresh Gupta">
+          </div>
+          <div class="form-group">
+            <label>Son/Daughter of</label>
+            <input type="text" id="rent-landlord-guardian" placeholder="e.g. Mohan Gupta">
+          </div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group">
+            <label>Landlord Address <span class="req">*</span></label>
+            <input type="text" id="rent-landlord-address" placeholder="Permanent address of landlord">
+          </div>
+        </div>
+
+        <div class="form-divider"></div>
+        <div class="form-section-title">Tenant Details</div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Tenant Full Name <span class="req">*</span></label>
+            <input type="text" id="rent-tenant" placeholder="e.g. Priya Sharma">
+          </div>
+          <div class="form-group">
+            <label>Son/Daughter of</label>
+            <input type="text" id="rent-tenant-guardian" placeholder="e.g. Ramesh Sharma">
+          </div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group">
+            <label>Tenant Permanent Address <span class="req">*</span></label>
+            <input type="text" id="rent-tenant-address" placeholder="Tenant's permanent address">
+          </div>
+        </div>
+
+        <div class="form-divider"></div>
+        <div class="form-section-title">Property & Agreement Terms</div>
+
+        <div class="form-row full">
+          <div class="form-group">
+            <label>Property Address (to be rented) <span class="req">*</span></label>
+            <input type="text" id="rent-property" placeholder="Full address of the rental property">
+          </div>
+        </div>
+        <div class="form-row three">
+          <div class="form-group">
+            <label>Monthly Rent (₹) <span class="req">*</span></label>
+            <input type="text" id="rent-amount" placeholder="e.g. 15000">
+          </div>
+          <div class="form-group">
+            <label>Security Deposit (₹) <span class="req">*</span></label>
+            <input type="text" id="rent-deposit" placeholder="e.g. 30000">
+          </div>
+          <div class="form-group">
+            <label>Tenure (months) <span class="req">*</span></label>
+            <input type="text" id="rent-tenure" placeholder="e.g. 11">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Agreement Start Date <span class="req">*</span></label>
+            <input type="date" id="rent-start">
+          </div>
+          <div class="form-group">
+            <label>Rent Due Date (each month)</label>
+            <input type="text" id="rent-due" placeholder="e.g. 5th of every month">
+          </div>
+        </div>
+      </div>
+      <div class="form-actions">
+        <div class="form-notice">🔒 Your data is never stored or shared</div>
+        <button class="btn-generate" onclick="generateDoc('rent')">Generate Rent Agreement ⬇️</button>
+      </div>
+    </div>
+
+    <!-- DV PROTECTION Form -->
+    <div class="form-card" id="form-dv">
+      <div class="form-card-header">
+        <div class="form-header-icon">🛡️</div>
+        <div>
+          <div class="form-header-title">DV Protection Application</div>
+          <div class="form-header-sub">Application under PWDVA 2005 — Section 12</div>
+        </div>
+      </div>
+      <div class="form-body">
+        <div class="form-section-title">Aggrieved Person (Applicant)</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Full Name <span class="req">*</span></label>
+            <input type="text" id="dv-name" placeholder="e.g. Sunita Devi">
+          </div>
+          <div class="form-group">
+            <label>Age <span class="req">*</span></label>
+            <input type="text" id="dv-age" placeholder="e.g. 30">
+          </div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group">
+            <label>Current Address (Residence) <span class="req">*</span></label>
+            <input type="text" id="dv-address" placeholder="Where you are currently living">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Phone / Contact Number</label>
+            <input type="tel" id="dv-phone" placeholder="e.g. 9876543210">
+          </div>
+          <div class="form-group">
+            <label>Date of Application <span class="req">*</span></label>
+            <input type="date" id="dv-date">
+          </div>
+        </div>
+
+        <div class="form-divider"></div>
+        <div class="form-section-title">Respondent (Abuser) Details</div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Respondent Full Name <span class="req">*</span></label>
+            <input type="text" id="dv-resp-name" placeholder="e.g. Rajesh Kumar">
+          </div>
+          <div class="form-group">
+            <label>Relationship to You <span class="req">*</span></label>
+            <select id="dv-relationship">
+              <option value="">Select relationship</option>
+              <option>Husband</option>
+              <option>Ex-Husband</option>
+              <option>Live-in Partner</option>
+              <option>Father-in-law</option>
+              <option>Mother-in-law</option>
+              <option>Brother-in-law</option>
+              <option>Other Family Member</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group">
+            <label>Respondent Address <span class="req">*</span></label>
+            <input type="text" id="dv-resp-address" placeholder="Address of the respondent">
+          </div>
+        </div>
+
+        <div class="form-divider"></div>
+        <div class="form-section-title">Nature of Domestic Violence</div>
+
+        <div class="form-row full">
+          <div class="form-group">
+            <label>Types of Violence Suffered <span class="req">*</span></label>
+            <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:4px;">
+              <label style="display:flex;align-items:center;gap:6px;font-weight:400;cursor:pointer;"><input type="checkbox" id="dv-physical"> Physical Abuse</label>
+              <label style="display:flex;align-items:center;gap:6px;font-weight:400;cursor:pointer;"><input type="checkbox" id="dv-sexual"> Sexual Abuse</label>
+              <label style="display:flex;align-items:center;gap:6px;font-weight:400;cursor:pointer;"><input type="checkbox" id="dv-emotional"> Emotional / Verbal Abuse</label>
+              <label style="display:flex;align-items:center;gap:6px;font-weight:400;cursor:pointer;"><input type="checkbox" id="dv-economic"> Economic Abuse</label>
+            </div>
+          </div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group">
+            <label>Description of Incidents <span class="req">*</span></label>
+            <textarea id="dv-description" rows="5" placeholder="Describe the incidents of domestic violence — dates, nature of violence, injuries sustained, witnesses..."></textarea>
+          </div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group">
+            <label>Relief Sought</label>
+            <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:4px;">
+              <label style="display:flex;align-items:center;gap:6px;font-weight:400;cursor:pointer;"><input type="checkbox" id="dv-r-protection"> Protection Order (Sec 18)</label>
+              <label style="display:flex;align-items:center;gap:6px;font-weight:400;cursor:pointer;"><input type="checkbox" id="dv-r-residence"> Residence Order (Sec 19)</label>
+              <label style="display:flex;align-items:center;gap:6px;font-weight:400;cursor:pointer;"><input type="checkbox" id="dv-r-monetary"> Monetary Relief (Sec 20)</label>
+              <label style="display:flex;align-items:center;gap:6px;font-weight:400;cursor:pointer;"><input type="checkbox" id="dv-r-custody"> Custody Order (Sec 21)</label>
+            </div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Magistrate Court / Jurisdiction <span class="req">*</span></label>
+            <input type="text" id="dv-court" placeholder="e.g. Judicial Magistrate, Saket Court, Delhi">
+          </div>
+        </div>
+      </div>
+      <div class="form-actions">
+        <div class="form-notice">🔒 Your data is never stored or shared</div>
+        <button class="btn-generate" onclick="generateDoc('dv')">Generate DV Application ⬇️</button>
+      </div>
+    </div>
+
+  </div><!-- /form-area -->
+</div><!-- /main-layout -->
+
+<!-- PREVIEW MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title">Document Preview</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="doc-preview" id="doc-preview"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal()">Close</button>
+      <button class="btn-download" onclick="downloadDoc()">⬇️ Download as .txt</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">✅ Document generated successfully!</div>
+
+<script>
+let currentDocText = '';
+let currentDocName = '';
+
+function showForm(type) {
+  document.querySelectorAll('.form-card').forEach(f => f.classList.remove('active'));
+  document.querySelectorAll('.doc-type-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('form-' + type).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+function v(id) {
+  const el = document.getElementById(id);
+  return el ? el.value.trim() : '';
+}
+
+function checked(id) {
+  const el = document.getElementById(id);
+  return el && el.checked;
+}
+
+function today() {
+  return new Date().toLocaleDateString('en-IN', {day:'2-digit',month:'long',year:'numeric'});
+}
+
+function generateDoc(type) {
+  let doc = '';
+  let name = '';
+
+  if (type === 'fir') {
+    const n=v('fir-name'), g=v('fir-guardian'), age=v('fir-age'), occ=v('fir-occupation');
+    const addr=v('fir-address'), phone=v('fir-phone'), date=v('fir-date');
+    const offence=v('fir-offence'), place=v('fir-place'), accused=v('fir-accused');
+    const desc=v('fir-description'), items=v('fir-items'), ps=v('fir-ps'), dist=v('fir-district');
+    if (!n||!g||!age||!addr||!date||!offence||!place||!desc||!ps||!dist) { alert('Please fill all required fields (marked with *).'); return; }
+    name = 'FIR_Application_' + n.replace(/\s/g,'_');
+    doc = `
+TO,
+The Station House Officer,
+${ps},
+${dist}
+
+SUBJECT: First Information Report (FIR) under Section 154 of the Code of Criminal Procedure, 1973
+
+Respected Sir/Madam,
+
+I, ${n}, ${age} years of age, Son/Daughter/Wife of ${g}, Occupation: ${occ||'Not specified'}, residing at ${addr}${phone ? ', Contact: '+phone : ''}, do hereby lodge this First Information Report regarding the following incident:
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+DETAILS OF THE INCIDENT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Date of Incident   : ${new Date(date).toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'})}
+Place of Incident  : ${place}
+Nature of Offence  : ${offence}
+Name(s) of Accused : ${accused || 'Unknown'}
+
+DESCRIPTION OF THE INCIDENT:
+${desc}
+
+${items ? `PROPERTY LOST / DAMAGED:\n${items}\n` : ''}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PRAYER
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+In light of the above, I respectfully request that:
+
+1. This complaint be registered as FIR under appropriate sections of the Indian Penal Code / Bharatiya Nyaya Sanhita, 2023.
+2. Necessary investigation be initiated at the earliest.
+3. The accused be identified, apprehended, and prosecuted as per law.
+4. My property/loss be recovered wherever applicable.
+
+I affirm that the above information is true to the best of my knowledge and belief.
+
+Yours faithfully,
+
+Name      : ${n}
+Date      : ${today()}
+Place     : ${dist}
+Signature : __________________
+
+[This document was generated by LegalQuestor for informational purposes. 
+Please have it reviewed by a legal professional before submission.]
+`.trim();
+
+  } else if (type === 'affidavit') {
+    const n=v('aff-name'), g=v('aff-guardian'), age=v('aff-age');
+    const nat=v('aff-nationality')||'Indian', occ=v('aff-occupation');
+    const addr=v('aff-address'), purpose=v('aff-purpose');
+    const statement=v('aff-statement'), place=v('aff-place'), date=v('aff-date');
+    if (!n||!g||!age||!addr||!purpose||!statement||!place||!date) { alert('Please fill all required fields.'); return; }
+    name = 'Affidavit_' + n.replace(/\s/g,'_');
+    doc = `
+AFFIDAVIT
+
+I, ${n}, Son/Daughter/Wife of ${g}, aged ${age} years, Nationality: ${nat}, Occupation: ${occ||'Not specified'}, residing at ${addr}, do hereby solemnly affirm and declare as under:
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PURPOSE: ${purpose.toUpperCase()}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+STATEMENT / DECLARATION:
+
+${statement}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+I further state and declare that the contents of this affidavit are true and correct to the best of my knowledge and belief, and nothing material has been concealed therefrom.
+
+VERIFICATION:
+
+Verified at ${place} on this ${new Date(date).toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'})} that the contents of the above affidavit are true and correct to the best of my knowledge and belief and that nothing material has been concealed.
+
+Deponent: ${n}
+Date     : ${new Date(date).toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'})}
+Place    : ${place}
+Sign     : __________________
+
+
+SWORN/AFFIRMED before me on this day _________ 
+
+Notary Public / Oath Commissioner
+[Stamp & Signature]
+
+[This document was generated by LegalQuestor for informational purposes.]
+`.trim();
+
+  } else if (type === 'bail') {
+    const n=v('bail-name'),g=v('bail-guardian'),age=v('bail-age'),occ=v('bail-occupation');
+    const addr=v('bail-address'),caseNo=v('bail-case'),arrestDate=v('bail-arrest-date');
+    const offence=v('bail-offence'),court=v('bail-court'),grounds=v('bail-grounds');
+    const surety=v('bail-surety'),date=v('bail-date');
+    if (!n||!g||!age||!addr||!caseNo||!arrestDate||!offence||!court||!grounds||!date) { alert('Please fill all required fields.'); return; }
+    name = 'Bail_Application_' + n.replace(/\s/g,'_');
+    doc = `
+IN THE ${court.toUpperCase()}
+
+APPLICATION FOR BAIL
+Under Section 437 / 439 of the Code of Criminal Procedure, 1973
+
+IN THE MATTER OF:
+${n}, Son/Daughter of ${g}
+Aged ${age} years, Occupation: ${occ||'Not specified'}
+Residing at: ${addr}
+                                               ... APPLICANT / ACCUSED
+
+VERSUS
+
+State of [State Name]                          ... RESPONDENT
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CASE DETAILS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FIR / Case Number    : ${caseNo}
+Date of Arrest       : ${new Date(arrestDate).toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'})}
+Offence(s) Charged   : ${offence}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+GROUNDS FOR BAIL:
+
+${grounds}
+
+PRAYER:
+
+In view of the facts and grounds stated above, it is most respectfully prayed that this Hon'ble Court may be pleased to:
+
+(a) Release the applicant on bail on such terms and conditions as this Hon'ble Court may deem fit and proper.
+(b) Pass such other orders as this Hon'ble Court may deem fit in the interest of justice.
+
+${surety ? `SURETY: ${surety}` : ''}
+
+Date: ${new Date(date).toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'})}
+
+Applicant: ${n}
+Signature: __________________
+Through Advocate: __________________
+
+[This document was generated by LegalQuestor for informational purposes.
+Must be filed through a registered Advocate.]
+`.trim();
+
+  } else if (type === 'rent') {
+    const ll=v('rent-landlord'),llg=v('rent-landlord-guardian'),lladdr=v('rent-landlord-address');
+    const tn=v('rent-tenant'),tng=v('rent-tenant-guardian'),tnaddr=v('rent-tenant-address');
+    const prop=v('rent-property'),amt=v('rent-amount'),dep=v('rent-deposit');
+    const tenure=v('rent-tenure'),start=v('rent-start'),due=v('rent-due');
+    if (!ll||!lladdr||!tn||!tnaddr||!prop||!amt||!dep||!tenure||!start) { alert('Please fill all required fields.'); return; }
+    const startDate = new Date(start);
+    const endDate = new Date(startDate);
+    endDate.setMonth(endDate.getMonth() + parseInt(tenure||11));
+    name = 'Rent_Agreement_' + tn.replace(/\s/g,'_');
+    doc = `
+RENTAL AGREEMENT
+
+This Rental Agreement is entered into on ${today()} between:
+
+LANDLORD:
+Name    : ${ll}${llg?', Son/Daughter of '+llg:''}
+Address : ${lladdr}
+(Hereinafter referred to as the "LANDLORD")
+
+AND
+
+TENANT:
+Name    : ${tn}${tng?', Son/Daughter of '+tng:''}
+Address : ${tnaddr}
+(Hereinafter referred to as the "TENANT")
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TERMS AND CONDITIONS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. PROPERTY: The Landlord agrees to let out and the Tenant agrees to take on rent the property situated at:
+   ${prop}
+
+2. DURATION: The tenancy shall be for a period of ${tenure} months, commencing from ${startDate.toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'})} and ending on ${endDate.toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'})}.
+
+3. RENT: The monthly rent shall be ₹${parseInt(amt).toLocaleString('en-IN')} (Rupees ${amt} Only), payable on or before the ${due||'5th'} of each calendar month.
+
+4. SECURITY DEPOSIT: The Tenant has paid a refundable security deposit of ₹${parseInt(dep).toLocaleString('en-IN')} (Rupees ${dep} Only), which shall be returned at the end of tenancy after deduction of any dues.
+
+5. UTILITIES: The Tenant shall pay electricity, water, and maintenance charges separately as applicable.
+
+6. USE OF PREMISES: The premises shall be used for residential purposes only and shall not be sublet without prior written consent of the Landlord.
+
+7. MAINTENANCE: The Tenant shall maintain the property in good condition and shall not make structural alterations.
+
+8. TERMINATION: Either party may terminate this agreement with one month's prior written notice.
+
+9. JURISDICTION: Any disputes arising out of this agreement shall be subject to the jurisdiction of courts at [City].
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+IN WITNESS WHEREOF, both parties have signed this agreement on the date first written above.
+
+LANDLORD: ${ll}           TENANT: ${tn}
+Signature: ______________  Signature: ______________
+Date: ${today()}           Date: ${today()}
+
+WITNESSES:
+1. Name: _________________ Sign: _________________
+2. Name: _________________ Sign: _________________
+
+[This document was generated by LegalQuestor for informational purposes.
+Consider getting it notarized or registered for full legal validity.]
+`.trim();
+
+  } else if (type === 'dv') {
+    const n=v('dv-name'),age=v('dv-age'),addr=v('dv-address'),phone=v('dv-phone'),date=v('dv-date');
+    const rn=v('dv-resp-name'),rel=v('dv-relationship'),raddr=v('dv-resp-address');
+    const desc=v('dv-description'),court=v('dv-court');
+    if (!n||!age||!addr||!date||!rn||!rel||!raddr||!desc||!court) { alert('Please fill all required fields.'); return; }
+    const violence = [checked('dv-physical')?'Physical Abuse':null,checked('dv-sexual')?'Sexual Abuse':null,checked('dv-emotional')?'Emotional/Verbal Abuse':null,checked('dv-economic')?'Economic Abuse':null].filter(Boolean).join(', ') || 'As described below';
+    const relief = [checked('dv-r-protection')?'Protection Order (Section 18)':null,checked('dv-r-residence')?'Residence Order (Section 19)':null,checked('dv-r-monetary')?'Monetary Relief (Section 20)':null,checked('dv-r-custody')?'Custody Order (Section 21)':null].filter(Boolean);
+    name = 'DV_Protection_Application_' + n.replace(/\s/g,'_');
+    doc = `
+BEFORE THE HON'BLE ${court.toUpperCase()}
+
+APPLICATION UNDER SECTION 12 OF THE PROTECTION OF WOMEN FROM
+DOMESTIC VIOLENCE ACT, 2005
+
+IN THE MATTER OF:
+
+${n}, Aged ${age} years
+Residing at: ${addr}
+${phone ? 'Contact: '+phone : ''}
+                                          ... AGGRIEVED PERSON / PETITIONER
+
+VERSUS
+
+${rn} (${rel})
+Residing at: ${raddr}
+                                          ... RESPONDENT
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PETITION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+The Petitioner above-named most respectfully submits as under:
+
+1. That the Petitioner is the aggrieved person within the meaning of Section 2(a) of the Protection of Women from Domestic Violence Act, 2005.
+
+2. That the Respondent is the ${rel} of the Petitioner and they have been in a domestic relationship as defined under Section 2(f) of the Act.
+
+3. NATURE OF DOMESTIC VIOLENCE SUFFERED: ${violence}
+
+4. DESCRIPTION OF INCIDENTS:
+${desc}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PRAYER
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+In view of the above facts and circumstances, the Petitioner most humbly prays that this Hon'ble Court may be pleased to pass the following orders against the Respondent:
+
+${relief.length > 0 ? relief.map((r,i) => `${i+1}. ${r}`).join('\n') : '1. Such orders as this Hon\'ble Court deems fit'}
+
+And/or pass such other orders as this Hon'ble Court may deem fit and proper in the interest of justice.
+
+VERIFICATION:
+
+I, ${n}, the Petitioner above named, do hereby verify and declare that the contents of this application are true and correct to the best of my knowledge and belief.
+
+Petitioner: ${n}
+Date: ${new Date(date).toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'})}
+Place: [City]
+Signature: __________________
+
+[This document was generated by LegalQuestor for informational purposes.
+This should be filed through a Protection Officer or with the assistance of a lawyer.
+Free legal aid is available at your District Legal Services Authority (DLSA).]
+`.trim();
+  }
+
+  currentDocText = doc;
+  currentDocName = name;
+  document.getElementById('doc-preview').textContent = doc;
+  document.getElementById('modal-title').textContent = name.replace(/_/g,' ');
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+}
+
+function downloadDoc() {
+  const blob = new Blob([currentDocText], {type:'text/plain;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = currentDocName + '.txt';
+  a.click();
+  showToast();
+}
+
+function showToast() {
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// URL param to pre-select form
+const params = new URLSearchParams(window.location.search);
+const preType = params.get('type');
+if (preType) {
+  const btns = document.querySelectorAll('.doc-type-btn');
+  const types = ['fir','affidavit','bail','rent','dv'];
+  const idx = types.indexOf(preType);
+  if (idx >= 0) {
+    document.querySelectorAll('.form-card').forEach(f => f.classList.remove('active'));
+    document.querySelectorAll('.doc-type-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('form-'+preType).classList.add('active');
+    btns[idx].classList.add('active');
+  }
+}
+
+// Close modal on overlay click
+document.getElementById('modal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+</script>
+</body>
+</html>
