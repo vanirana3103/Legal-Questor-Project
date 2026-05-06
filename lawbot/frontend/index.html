@@ -704,7 +704,7 @@
 </main>
 
 <script>
-  const BACKEND_URL = 'http://localhost:5000';
+const BACKEND_URL = 'https://legal-questor-project-1.onrender.com';
   let chatHistory = [];
   let isLoading = false;
 
@@ -815,30 +815,24 @@
   }
 
   // ── Send message ────────────────────────────────────────────────────────
-  async function sendMessage() {
+ // ── Send message ────────────────────────────────────────────────────────
+async function sendMessage() {
     if (isLoading) return;
 
     const input = document.getElementById('chatInput');
     const message = input.value.trim();
     if (!message) return;
 
-    const apiKey = apiKeyEl.value.trim();
-    if (!apiKey) {
-      showToast('Please enter your Groq API key in the sidebar first!');
-      apiKeyEl.focus();
-      return;
-    }
-
+    // REMOVED: Frontend no longer needs to check for the key manually
+    
     input.value = '';
     input.style.height = 'auto';
     isLoading = true;
     document.getElementById('sendBtn').disabled = true;
 
-    // Add user message
     addMessage('user', message);
     chatHistory.push({ role: 'user', content: message });
 
-    // Show typing
     showTyping();
 
     try {
@@ -847,7 +841,7 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message,
-          api_key: apiKey,
+          // REMOVED: api_key: apiKey (The backend uses os.getenv instead)
           history: chatHistory.slice(-6)
         })
       });
@@ -865,16 +859,12 @@
 
     } catch (err) {
       removeTyping();
-      if (err.message.includes('fetch')) {
-        showToast('Cannot connect to backend. Make sure app.py is running on port 5000.');
-      } else {
-        showToast('Error: ' + err.message);
-      }
+      showToast('Error: ' + err.message);
     } finally {
       isLoading = false;
       document.getElementById('sendBtn').disabled = false;
     }
-  }
+}
 
   function sendQuick(text) {
     document.getElementById('chatInput').value = text;
