@@ -8,8 +8,7 @@ import json, pickle, os, requests
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 
-app = Flask(__name__, static_folder='../frontend', static_url_path='')
-
+app = Flask(__name__, static_folder='../../', static_url_path='')
 # ── Load RAG index ──────────────────────────────────────────────────────────
 BASE = os.path.dirname(__file__)
 
@@ -82,9 +81,12 @@ Always end responses about serious matters with: "Remember, you can also consult
 
 # ── API Routes ───────────────────────────────────────────────────────────────
 
+
 @app.route('/')
 def index():
-    return send_from_directory('../frontend', 'index.html')
+    # This points to your main LegalQuestor landing page
+    # Adjust the path if your main file is named differently (e.g., 'home.html')
+    return send_from_directory('../../legalquestor', 'index.html')
 
 @app.route('/api/chat', methods=['POST'])
 def chat():
